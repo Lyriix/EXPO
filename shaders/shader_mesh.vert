@@ -10,6 +10,7 @@ varying vec4 position_3d_modelview;
 varying vec3 normal;
 varying vec4 color;
 
+in int MatIndex;
 
 void main (void)
 {
