@@ -1,5 +1,6 @@
 #version 120
 
+
 uniform mat4 camera_projection;
 uniform mat4 camera_modelview;
 uniform mat4 normal_matrix;
@@ -10,7 +11,6 @@ varying vec4 position_3d_modelview;
 varying vec3 normal;
 varying vec4 color;
 
-in int MatIndex;
 
 void main (void)
 {

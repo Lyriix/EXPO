@@ -1,14 +1,17 @@
-#version 330 core
+#version 120
+
 
 uniform mat4 camera_projection;
 uniform mat4 camera_modelview;
 uniform mat4 normal_matrix;
+
 
 varying vec4 position_3d_original;
 varying vec4 position_3d_modelview;
 
 varying vec3 normal;
 varying vec4 color;
+
 
 
 void main (void)
@@ -24,35 +27,3 @@ void main (void)
 
     gl_TexCoord[0]=gl_MultiTexCoord0;
 }
-/*
-uniform mat4 camera_modelview;
-uniform mat4 camera_projection;
-uniform mat4 normal_matrix;
-
-varying vec4 position_3d_original;
-varying vec4 position_3d_modelview;
-
-//in vec4 VertexColor;
-//in vec3 VertexNormal;
-//in vec4 VertexPosition;
-
-out vec4 color;
-out vec3 normal;
-//out vec4 Position;
-
-void main(void)
-{
-    gl_Position = camera_projection*camera_modelview*gl_Vertex;
-    //Color = VertexColor;
-    //Normal = normalize(normal_matrix * VertexNormal);
-    position_3d_original = gl_Vertex;
-    position_3d_modelview = camera_modelview*gl_Vertex;
-    color = gl_Color;
-
-    vec4 normal4d = normal_matrix*vec4(normalize(gl_Normal),0);
-    normal = normal4d.xyz;
-
-    gl_TexCoord[0]=gl_MultiTexCoord0;
-}
-
-*/
