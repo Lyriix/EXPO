@@ -34,4 +34,11 @@ vec3& material::specular()      {    return material_basic::specular();}
 float material::shininess() const { return material_basic::shininess(); }
 float& material::shininess()       { return material_basic::shininess(); }
 
+
+void material::set_emission(vec3 const& v){ material_basic::set_emission(v); }
+void material::set_ambient(vec3 const& v) { material_basic::set_ambient(v); }
+void material::set_diffuse(vec3 const& v){  material_basic::set_diffuse(v); }
+void material::set_specular(vec3 const& v){ material_basic::set_specular(v);}
+void material::set_shininess(float const& f){ material_basic::set_shininess(f);}
+
 }

@@ -39,4 +39,19 @@ struct mtl_structure
     float data_shininess; //Ns
 };
 
+/** Read an mtl file and return a material structure */
+mtl_structure load_file_mtl_structure(std::string const& filename);
+
+/** Read phong specular component Ns */
+void read_phong_mtl(std::stringstream& tokens, mtl_structure& mtl);
+/** Ka : read ambient color */
+void read_ambient_mtl(std::stringstream& tokens, mtl_structure& mtl);
+/** Kd : read diffuse color */
+void read_diffuse_mtl(std::stringstream& tokens, mtl_structure& mtl);
+/** Ks Read specular color */
+void read_specular_mtl(std::stringstream& tokens, mtl_structure& mtl);
+/** Read emission parameter Ke */
+void read_emission_mtl(std::stringstream& tokens, mtl_structure& mtl);
 }
+
+#endif

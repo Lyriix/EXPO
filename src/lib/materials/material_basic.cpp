@@ -39,5 +39,10 @@ vec3& material_basic::specular()      {    return specular_light;}
 float material_basic::shininess() const { return shininess_parameter; }
 float& material_basic::shininess()       { return shininess_parameter; }
 
+void material_basic::set_emission(vec3 const& v){ emission_light = v; }
+void material_basic::set_ambient(vec3 const& v) { ambient_light = v; }
+void material_basic::set_diffuse(vec3 const& v){  diffuse_light = v; }
+void material_basic::set_specular(vec3 const& v){ specular_light = v;}
+void material_basic::set_shininess(float const& f){shininess_parameter = f;}
 
 }

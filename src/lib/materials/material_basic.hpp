@@ -62,17 +62,28 @@ protected:
     float shininess() const;
     float& shininess();
 
+    /** Set material */
+    void set_emission(vec3 const& v);
+    void set_ambient(vec3 const& v);
+    void set_diffuse(vec3 const& v);
+    void set_specular(vec3 const& v);
+    void set_shininess(float const& f);
+
 private:
+    //MATERIAL PROPERTIES
     /** Internal Storage for emission light */
     vec3 emission_light;
     /** Internal storage for ambient light */
     vec3 ambient_light;
     /** Internal storage for diffuse light */
     vec3 diffuse_light;
-    /** Internal storage for specular ligjt */
+    /** Internal storage for specular light */
     vec3 specular_light;
-    /** Internal storage for Shininess parameter */
+    /** Internal storage for Shininess light parameter */
     float shininess_parameter;
+
+    // LIGHT PROPERTIES
+
 };
 
 

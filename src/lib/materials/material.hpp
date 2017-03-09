@@ -45,6 +45,13 @@ public:
     /** Get/set shinisses parameter */
     float shininess() const;
     float& shininess();
+
+    /** Set material */
+    void set_emission(vec3 const& v);
+    void set_ambient(vec3 const& v);
+    void set_diffuse(vec3 const& v);
+    void set_specular(vec3 const& v);
+    void set_shininess(float const& f);
 };
 }
 
