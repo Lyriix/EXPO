@@ -9,6 +9,7 @@
 #include "../../lib/interface/camera_matrices.hpp"
 #include "../interface/myWidgetGL.hpp"
 #include "../../lib/mesh/mesh_io.hpp"
+#include "../../lib/materials/material_io.hpp"
 
 #include <cmath>
 #include <string>
@@ -25,7 +26,9 @@ void scene::load_scene()
     // Preload default structure               //
     //*****************************************//
     texture_default = load_texture_file("data/white.jpg");
-    shader_program_id = read_shader("shaders/shader_mesh.vert",
+    /*shader_program_id = read_shader("shaders/shader_mesh.vert",
+                                    "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();*/
+    shader_program_id = read_shader("shaders/shader_material.vert",
                                     "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();
 
     //******************************************//
@@ -86,6 +89,12 @@ void scene::load_scene()
     SighTe04_pivot_opengl.fill_vbo(SighTe04_pivot);
     SighTe05_pivot_opengl.fill_vbo(SighTe05_pivot);
     SighTe06_pivot_opengl.fill_vbo(SighTe06_pivot);
+
+    //**********//
+    // MATERIALS //
+    //**********//
+
+    SighConj_pivot_material = load_material_file("data/Blender/eye3d/object/mtl/SighConj_pivot.mtl");
 
     //*****************************************//
     // Generate user defined mesh              //

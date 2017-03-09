@@ -15,6 +15,8 @@
 #include "../../lib/opengl/mesh_opengl.hpp"
 #include "../../lib/interface/camera_matrices.hpp"
 
+#include "../../lib/materials/material.hpp"
+
 #include <vector>
 
 
@@ -66,6 +68,7 @@ private:
     GLuint texture_SighConj_pivot, texture_SighCorn, texture_SighEsc1;
 
 
+    cpe::material SighConj_pivot_material;
 
     /** Variable for Dragon */
     float tps=0.0f;
