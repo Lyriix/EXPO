@@ -26,10 +26,10 @@ void scene::load_scene()
     // Preload default structure               //
     //*****************************************//
     texture_default = load_texture_file("data/white.jpg");
-    /*shader_program_id = read_shader("shaders/shader_mesh.vert",
+   /* shader_program_id = read_shader("shaders/shader_mesh.vert",
                                     "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();*/
     shader_program_id = read_shader("shaders/shader_material.vert",
-                                    "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();
+                                    "shaders/shader_material.frag"); PRINT_OPENGL_ERROR();
 
     //******************************************//
     //OBJ Mesh                                  //
@@ -41,6 +41,7 @@ void scene::load_scene()
 
     SighCorn = load_mesh_file("data/Blender/eye3d/object/obj/SighCorn.obj");
     SighCorn.transform_apply_scale(0.002f);
+    SighCorn.transform_opposite_normal_orientation();
     SighCorn_opengl.fill_vbo(SighCorn);
 
     SighCoro_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighCoro_pivot.obj");
@@ -57,6 +58,7 @@ void scene::load_scene()
 
     SighPupi_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighPupi_pivot.obj");
     SighPupi_pivot.transform_apply_scale(0.002f);
+    SighPupi_pivot.fill_color(vec3(0.2,0.2,0.7));
     SighPupi_pivot_opengl.fill_vbo(SighPupi_pivot);
 
     SighReti_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighReti_pivot.obj");
@@ -95,7 +97,7 @@ void scene::load_scene()
     //**********//
 
     SighConj_pivot_material = load_material_file("data/Blender/eye3d/object/mtl/SighConj_pivot.mtl");
-
+    SighPupi_pivot_material = load_material_file("data/Blender/eye3d/object/mtl/SighPupi_pivot.mtl");
     //*****************************************//
     // Generate user defined mesh              //
     //*****************************************//
@@ -116,39 +118,71 @@ void scene::draw_scene()
     glUniformMatrix4fv(get_uni_loc(shader_program_id,"normal_matrix"),1,false,cam.normal.pointer());           PRINT_OPENGL_ERROR();
 
 
+
+
+
+
     //Draw the meshes
+    //texture_SighConj_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
+
+    vec3 di = vec3(1.0,0.5,0.2);
+    vec3 am = vec3(1.0,0.5,0.2);
+    float N = 0.5;
+
+    vec3& em  =  SighConj_pivot_material.emission();
+    glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());                        PRINT_OPENGL_ERROR();
     glBindTexture(GL_TEXTURE_2D,texture_default);
     SighConj_pivot_opengl.draw();
+
+
     texture_SighCorn = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
     glBindTexture(GL_TEXTURE_2D,texture_SighCorn); PRINT_OPENGL_ERROR();
-    SighCorn_opengl.draw();
+    //SighCorn_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighCoro_pivot_opengl.draw();
+    //SighCoro_pivot_opengl.draw();
+
     texture_SighEsc1 = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSecT.png");
     glBindTexture(GL_TEXTURE_2D,texture_SighEsc1);
-    SighEsc1_opengl.draw();
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighEsc2_opengl.draw();
+    //SighEsc1_opengl.draw();
+
+    texture_SighEsc2 = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSecT.png");
+    glBindTexture(GL_TEXTURE_2D,texture_SighEsc2);
+    //SighEsc2_opengl.draw();
+
+    //texture_SighPupi_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/")
+    em  = vec3(0.5,1.0,1.0);// SighPupi_pivot_material.emission();
+    glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());
     glBindTexture(GL_TEXTURE_2D,texture_default);
     SighPupi_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighReti_pivot_opengl.draw();
+    //SighReti_pivot_opengl.draw();
+
+    texture_SighSkin_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSkiT.png");
+    glBindTexture(GL_TEXTURE_2D,texture_SighSkin_pivot);
+    //SighSkin_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighSkin_pivot_opengl.draw();
+    //SighSkul_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighSkul_pivot_opengl.draw();
+    //SighTe01_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighTe01_pivot_opengl.draw();
+    //SighTe02_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighTe02_pivot_opengl.draw();
+    //SighTe03_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighTe03_pivot_opengl.draw();
+    //SighTe04_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighTe04_pivot_opengl.draw();
+    //SighTe05_pivot_opengl.draw();
+
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighTe05_pivot_opengl.draw();
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighTe06_pivot_opengl.draw();
+    //SighTe06_pivot_opengl.draw();
 
 }
 

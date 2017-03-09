@@ -65,10 +65,12 @@ private:
                 SighReti_pivot_opengl, SighSkin_pivot_opengl, SighSkul_pivot_opengl,
                 SighTe01_pivot_opengl, SighTe02_pivot_opengl, SighTe03_pivot_opengl,
                 SighTe04_pivot_opengl, SighTe05_pivot_opengl, SighTe06_pivot_opengl;
-    GLuint texture_SighConj_pivot, texture_SighCorn, texture_SighEsc1;
+    GLuint texture_SighConj_pivot, texture_SighCorn, texture_SighEsc1, texture_SighEsc2,
+                 texture_SighPupi_pivot, texture_SighReti_pivot, texture_SighSkin_pivot;
 
 
-    cpe::material SighConj_pivot_material;
+    cpe::material SighConj_pivot_material,
+                    SighPupi_pivot_material;
 
     /** Variable for Dragon */
     float tps=0.0f;
