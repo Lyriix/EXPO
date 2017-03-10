@@ -11,6 +11,7 @@
 #include "../../lib/mesh/mesh_io.hpp"
 #include "../../lib/materials/material_io.hpp"
 
+#include "../../lib/mesh/format/read_obj.hpp"
 #include <cmath>
 #include <string>
 #include <sstream>
@@ -21,6 +22,8 @@ using namespace cpe;
 
 void scene::load_scene()
 {
+    //debug
+    std::vector<mesh> mm = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/sight.obj");
 
     //*****************************************//
     // Preload default structure               //
@@ -144,14 +147,14 @@ void scene::draw_scene()
 
     texture_SighEsc1 = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSecT.png");
     glBindTexture(GL_TEXTURE_2D,texture_SighEsc1);
-    //SighEsc1_opengl.draw();
+    SighEsc1_opengl.draw();
 
     texture_SighEsc2 = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSecT.png");
     glBindTexture(GL_TEXTURE_2D,texture_SighEsc2);
     //SighEsc2_opengl.draw();
 
     //texture_SighPupi_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/")
-    em  = vec3(0.5,1.0,1.0);// SighPupi_pivot_material.emission();
+    em  = vec3(0.5,0.0,1.0);// SighPupi_pivot_material.emission();
     glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());
     glBindTexture(GL_TEXTURE_2D,texture_default);
     SighPupi_pivot_opengl.draw();
