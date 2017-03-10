@@ -25,6 +25,7 @@
 #include "../3d/vec2.hpp"
 #include "triangle_index.hpp"
 
+#include "../materials/material.hpp"
 #include <vector>
 
 
@@ -40,6 +41,7 @@ class mat4;
  * - 1 normal per vertex
  * - 1 color (r,g,b) per vertex
  * - 1 texture coordinate (u,v) per vertex
+ * - 1 material structure
 */
 class mesh_basic
 {
@@ -132,13 +134,15 @@ protected:
     vec2& texture_coord(int index);
     triangle_index connectivity(int index) const;
     triangle_index& connectivity(int index);
-
+    int get_material_index() const;
+    int &get_material_index();
 
     void add_vertex(vec3 const& v);
     void add_normal(vec3 const& n);
     void add_color(vec3 const& c);
     void add_texture_coord(vec2 const& t);
     void add_triangle_index(triangle_index const& idx);
+    void add_material_index(const int &material_index);
 
     /** Compute the two extremities of the Axis Aligned Bounding Box */
     void compute_mesh_aabb_extremities(vec3& corner_min,vec3& corner_max);
@@ -146,6 +150,8 @@ protected:
 
 private:
 
+    /** name of the object if furnished in a description file or set by the user */
+    std::string object_name;
 
     /** Internal storage for the vertices */
     std::vector<vec3> vertex_data;
@@ -158,6 +164,11 @@ private:
 
     /** Internal storage for the triangles indices */
     std::vector<triangle_index> connectivity_data;
+
+    /** Name of the material if set in a descrtiption file or set by the user */
+    std::string material_name;
+    /** Internal stroage for the material */
+    int material_index;
 };
 
 }

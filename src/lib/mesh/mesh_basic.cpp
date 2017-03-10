@@ -27,7 +27,7 @@ namespace cpe
 {
 
 mesh_basic::mesh_basic()
-    :vertex_data(),normal_data(),color_data(),texture_coord_data(),connectivity_data()
+    :vertex_data(),normal_data(),color_data(),texture_coord_data(),connectivity_data(),material_index()
 {}
 
 int mesh_basic::size_vertex() const {return vertex_data.size();}
@@ -111,6 +111,17 @@ triangle_index& mesh_basic::connectivity(int const index)
     return connectivity_data[index];
 }
 
+int mesh_basic::get_material_index() const
+{
+    return material_index ;
+}
+int& mesh_basic::get_material_index()
+{
+    return material_index;
+}
+
+
+
 void mesh_basic::add_vertex(vec3 const& v)
 {
     vertex_data.push_back(v);
@@ -136,6 +147,10 @@ void mesh_basic::add_triangle_index(triangle_index const& idx)
     connectivity_data.push_back(idx);
 }
 
+void mesh_basic::add_material_index(int const& m_index)
+{
+    material_index = m_index;
+}
 
 void mesh_basic::fill_color(vec3 const& c)
 {
