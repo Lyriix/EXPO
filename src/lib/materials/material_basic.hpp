@@ -61,6 +61,10 @@ protected:
     /** Get/set shinisses parameter */
     float shininess() const;
     float& shininess();
+    /** Get/set material index */
+    int index() const;
+    int& index();
+
 
     /** Set material */
     void set_emission(vec3 const& v);
@@ -68,6 +72,7 @@ protected:
     void set_diffuse(vec3 const& v);
     void set_specular(vec3 const& v);
     void set_shininess(float const& f);
+    void set_material_index(int const& mIndex);
 
 private:
     //MATERIAL PROPERTIES
@@ -81,6 +86,9 @@ private:
     vec3 specular_light;
     /** Internal storage for Shininess light parameter */
     float shininess_parameter;
+
+    /** Index of this material */
+    int material_index;
 
     // LIGHT PROPERTIES
 

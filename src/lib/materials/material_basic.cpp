@@ -38,11 +38,14 @@ vec3 material_basic::specular() const{    return specular_light;}
 vec3& material_basic::specular()      {    return specular_light;}
 float material_basic::shininess() const { return shininess_parameter; }
 float& material_basic::shininess()       { return shininess_parameter; }
+int material_basic::index() const { return material_index;}
+int& material_basic::index() { return material_index;}
 
 void material_basic::set_emission(vec3 const& v){ emission_light = v; }
 void material_basic::set_ambient(vec3 const& v) { ambient_light = v; }
 void material_basic::set_diffuse(vec3 const& v){  diffuse_light = v; }
 void material_basic::set_specular(vec3 const& v){ specular_light = v;}
 void material_basic::set_shininess(float const& f){shininess_parameter = f;}
+void material_basic::set_material_index(const int &mIndex) {material_index = mIndex; }
 
 }
