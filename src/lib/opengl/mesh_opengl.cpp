@@ -28,7 +28,7 @@ namespace cpe
 {
 
 mesh_opengl::mesh_opengl()
-    :vbo_vertex(0),vbo_normal(0),vbo_color(0),vbo_texture(0),vbo_index(0),number_of_triangles(0)
+    :vbo_vertex(0),vbo_normal(0),vbo_color(0),vbo_texture(0),vbo_index(0),number_of_triangles(0),vbo_material(0)
 {
 
 }
@@ -70,6 +70,11 @@ void mesh_opengl::fill_vbo(mesh_basic const& m)
     {glGenBuffers(1,&vbo_index);PRINT_OPENGL_ERROR();}
     ASSERT_CPE(vbo_index!=0,"Problem creation of VBO");
 
+    if(vbo_material == 0)
+    {glGenBuffers(1,&vbo_material); PRINT_OPENGL_ERROR();}
+    ASSERT_CPE(vbo_material!=0,"Problem creqtion of vbo material");
+
+
 
 
     //VBO vertex
@@ -101,6 +106,7 @@ void mesh_opengl::fill_vbo(mesh_basic const& m)
     if(!glIsBuffer(vbo_index))
         throw cpe::exception_cpe("vbo_index incorrect",EXCEPTION_PARAMETERS_CPE);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(int)*m.size_connectivity(),m.pointer_triangle_index(),GL_DYNAMIC_DRAW); PRINT_OPENGL_ERROR();
+
 
 }
 

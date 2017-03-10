@@ -67,6 +67,8 @@ private:
     GLuint vbo_texture;
     /** VBO for the triangle index */
     GLuint vbo_index;
+    /** VBO for the materials */
+    GLuint vbo_material;
 
     /** Store the number of triangles of the mesh */
     unsigned int number_of_triangles;
