@@ -57,10 +57,10 @@ private:
 
     // Data of the scene
 
-    cpe::mesh SighConj_pivot, SighCorn, SighCoro_pivot, SighEsc1, SighEsc2, SighPupi_pivot,
+    cpe::mesh SighConj_pivot;/* SighCorn, SighCoro_pivot, SighEsc1, SighEsc2, SighPupi_pivot,
             SighReti_pivot, SighSkin_pivot, SighSkul_pivot, SighTe01_pivot, SighTe02_pivot,
-            SighTe03_pivot, SighTe04_pivot, SighTe05_pivot, SighTe06_pivot;
-    cpe::mesh_opengl SighConj_pivot_opengl, SighCorn_opengl, SighCoro_pivot_opengl,
+            SighTe03_pivot, SighTe04_pivot, SighTe05_pivot, SighTe06_pivot;*/
+    cpe::mesh_opengl SighConj_pivot_opengl;/*, SighCorn_opengl, SighCoro_pivot_opengl,
                 SighEsc1_opengl, SighEsc2_opengl, SighPupi_pivot_opengl,
                 SighReti_pivot_opengl, SighSkin_pivot_opengl, SighSkul_pivot_opengl,
                 SighTe01_pivot_opengl, SighTe02_pivot_opengl, SighTe03_pivot_opengl,
@@ -70,7 +70,10 @@ private:
 
 
     cpe::material SighConj_pivot_material,
-                    SighPupi_pivot_material;
+                    SighPupi_pivot_material;*/
+    std::vector<cpe::mesh> mesh_eye;
+    std::vector<cpe::mesh_opengl> mesh_eye_opengl;
+    cpe::material material_eye;
 
     /** Variable for Dragon */
     float tps=0.0f;

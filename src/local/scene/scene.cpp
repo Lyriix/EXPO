@@ -22,85 +22,41 @@ using namespace cpe;
 
 void scene::load_scene()
 {
-    //debug
-    std::vector<mesh> mm = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/sight.obj");
+
+
 
     //*****************************************//
     // Preload default structure               //
     //*****************************************//
     texture_default = load_texture_file("data/white.jpg");
-   /* shader_program_id = read_shader("shaders/shader_mesh.vert",
-                                    "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();*/
-    shader_program_id = read_shader("shaders/shader_material.vert",
-                                    "shaders/shader_material.frag"); PRINT_OPENGL_ERROR();
+     shader_program_id = read_shader("shaders/shader_mesh.vert",
+                                    "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();
+   /* shader_program_id = read_shader("shaders/shader_material.vert",
+                                    "shaders/shader_material.frag"); PRINT_OPENGL_ERROR();*/
 
     //******************************************//
     //OBJ Mesh                                  //
     //***************************************** //
+    mesh_eye = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/cube.obj");
+    std::vector<mesh>::iterator it_mesh = mesh_eye.begin();
+    std::vector<mesh_opengl>::iterator it_mgl = mesh_eye_opengl.begin();
 
-    SighConj_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighConj_pivot.obj");
-    SighConj_pivot.transform_apply_scale(0.002f);
-    SighConj_pivot_opengl.fill_vbo(SighConj_pivot);
+    mesh_eye_opengl.assign(3,mesh_opengl());
+    for(int i=0; i< mesh_eye.size(); i++)
+    {
+        mesh_eye.at(i).transform_apply_scale(1.0f);
+        mesh_eye.at(i).fill_color_normal();
+        mesh_eye_opengl.at(i).fill_vbo(mesh_eye.at(i));std::cout << "coucou" << std::endl;
+    }
 
-    SighCorn = load_mesh_file("data/Blender/eye3d/object/obj/SighCorn.obj");
-    SighCorn.transform_apply_scale(0.002f);
-    SighCorn.transform_opposite_normal_orientation();
-    SighCorn_opengl.fill_vbo(SighCorn);
-
-    SighCoro_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighCoro_pivot.obj");
-    SighCoro_pivot.transform_apply_scale(0.002f);
-    SighCoro_pivot_opengl.fill_vbo(SighCoro_pivot);
-
-    SighEsc1 = load_mesh_file("data/Blender/eye3d/object/obj/SighEsc1.obj");
-    SighEsc1.transform_apply_scale(0.002f);
-    SighEsc1_opengl.fill_vbo(SighEsc1);
-
-    SighEsc2 = load_mesh_file("data/Blender/eye3d/object/obj/SighEsc2.obj");
-    SighEsc2.transform_apply_scale(0.002f);
-    SighEsc2_opengl.fill_vbo(SighEsc2);
-
-    SighPupi_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighPupi_pivot.obj");
-    SighPupi_pivot.transform_apply_scale(0.002f);
-    SighPupi_pivot.fill_color(vec3(0.2,0.2,0.7));
-    SighPupi_pivot_opengl.fill_vbo(SighPupi_pivot);
-
-    SighReti_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighReti_pivot.obj");
-    SighReti_pivot.transform_apply_scale(0.002f);
-    SighReti_pivot_opengl.fill_vbo(SighReti_pivot);
-
-    SighSkin_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighSkin_pivot.obj");
-    SighSkin_pivot.transform_apply_scale(0.002f);
-    SighSkin_pivot_opengl.fill_vbo(SighSkin_pivot);
-
-    SighSkul_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighSkul_pivot.obj");
-    SighSkul_pivot.transform_apply_scale(0.002f);
-    SighSkul_pivot_opengl.fill_vbo(SighSkul_pivot);
-
-    SighTe01_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighTe01_pivot.obj");
-    SighTe02_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighTe02_pivot.obj");
-    SighTe03_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighTe03_pivot.obj");
-    SighTe04_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighTe04_pivot.obj");
-    SighTe05_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighTe05_pivot.obj");
-    SighTe06_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighTe06_pivot.obj");
-    SighTe01_pivot.transform_apply_scale(0.002f);
-    SighTe02_pivot.transform_apply_scale(0.002f);
-    SighTe03_pivot.transform_apply_scale(0.002f);
-    SighTe04_pivot.transform_apply_scale(0.002f);
-    SighTe05_pivot.transform_apply_scale(0.002f);
-    SighTe06_pivot.transform_apply_scale(0.002f);
-    SighTe01_pivot_opengl.fill_vbo(SighTe01_pivot);
-    SighTe02_pivot_opengl.fill_vbo(SighTe02_pivot);
-    SighTe03_pivot_opengl.fill_vbo(SighTe03_pivot);
-    SighTe04_pivot_opengl.fill_vbo(SighTe04_pivot);
-    SighTe05_pivot_opengl.fill_vbo(SighTe05_pivot);
-    SighTe06_pivot_opengl.fill_vbo(SighTe06_pivot);
+    /*SighConj_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighConj_pivot.obj");
+        SighConj_pivot.transform_apply_scale(0.002f);
+        SighConj_pivot_opengl.fill_vbo(SighConj_pivot);*/
 
     //**********//
     // MATERIALS //
     //**********//
 
-    SighConj_pivot_material = load_material_file("data/Blender/eye3d/object/mtl/SighConj_pivot.mtl");
-    SighPupi_pivot_material = load_material_file("data/Blender/eye3d/object/mtl/SighPupi_pivot.mtl");
     //*****************************************//
     // Generate user defined mesh              //
     //*****************************************//
@@ -126,17 +82,29 @@ void scene::draw_scene()
 
 
     //Draw the meshes
+
+    /*for(auto& mgl : mesh_eye_opengl)
+    {
+        glBindTexture(GL_TEXTURE_2D,texture_default);
+        mgl.draw();
+    }*/
+    for(int i=1; i<3 ; ++i)
+    {
+       // glBindTexture(GL_TEXTURE_2D,texture_default);
+       // mesh_eye_opengl.at(i).draw();
+
+    }
     //texture_SighConj_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
 
-    vec3 di = vec3(1.0,0.5,0.2);
+    /* vec3 di = vec3(1.0,0.5,0.2);
     vec3 am = vec3(1.0,0.5,0.2);
     float N = 0.5;
 
     vec3& em  =  SighConj_pivot_material.emission();
-    glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());                        PRINT_OPENGL_ERROR();
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighConj_pivot_opengl.draw();
-
+    glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());                        PRINT_OPENGL_ERROR();*/
+    //glBindTexture(GL_TEXTURE_2D,texture_default);
+    //SighConj_pivot_opengl.draw();
+/*
 
     texture_SighCorn = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
     glBindTexture(GL_TEXTURE_2D,texture_SighCorn); PRINT_OPENGL_ERROR();
@@ -185,7 +153,7 @@ void scene::draw_scene()
     //SighTe05_pivot_opengl.draw();
 
     glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe06_pivot_opengl.draw();
+    //SighTe06_pivot_opengl.draw();*/
 
 }
 
