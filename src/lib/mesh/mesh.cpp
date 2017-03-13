@@ -37,13 +37,19 @@ vec2 mesh::texture_coord(int const index) const          {return mesh_basic::tex
 vec2& mesh::texture_coord(int const index)               {return mesh_basic::texture_coord(index);}
 triangle_index mesh::connectivity(int const index) const {return mesh_basic::connectivity(index);}
 triangle_index& mesh::connectivity(int const index)      {return mesh_basic::connectivity(index);}
-int mesh::get_material_index() const {return mesh_basic::get_material_index();}
-int& mesh::get_material_index() { return mesh_basic::get_material_index();}
+std::string mesh::get_material_name()      const         {return mesh_basic::get_material_name();}
+std::string& mesh::get_material_name()                   {return mesh_basic::get_material_name();}
+int mesh::get_material_index() const                     {return mesh_basic::get_material_index();}
+int& mesh::get_material_index()                          {return mesh_basic::get_material_index();}
+std::string mesh::get_object_name() const                {return mesh_basic::get_object_name();}
+std::string& mesh::get_object_name()                     {return mesh_basic::get_object_name();}
 
 void mesh::add_vertex(vec3 const& v)                     {mesh_basic::add_vertex(v);}
 void mesh::add_normal(vec3 const& n)                     {mesh_basic::add_normal(n);}
 void mesh::add_color(vec3 const& c)                      {mesh_basic::add_color(c);}
 void mesh::add_texture_coord(vec2 const& t)              {mesh_basic::add_texture_coord(t);}
 void mesh::add_triangle_index(triangle_index const& idx) {mesh_basic::add_triangle_index(idx);}
+void mesh::add_material_name(const std::string &name)    {mesh_basic::add_material_name(name);}
 void mesh::add_material_index(const int &material_index) {mesh_basic::add_material_index(material_index);}
+void mesh::add_object_name(const std::string &name)      {mesh_basic::add_object_name(name);}
 }

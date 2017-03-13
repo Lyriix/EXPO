@@ -111,6 +111,15 @@ triangle_index& mesh_basic::connectivity(int const index)
     return connectivity_data[index];
 }
 
+std::string mesh_basic::get_material_name() const
+{
+    return material_name;
+}
+std::string& mesh_basic::get_material_name()
+{
+    return material_name;
+}
+
 int mesh_basic::get_material_index() const
 {
     return material_index ;
@@ -120,6 +129,15 @@ int& mesh_basic::get_material_index()
     return material_index;
 }
 
+std::string mesh_basic::get_object_name() const
+{
+    return object_name;
+}
+
+std::string& mesh_basic::get_object_name()
+{
+    return object_name;
+}
 
 
 void mesh_basic::add_vertex(vec3 const& v)
@@ -147,9 +165,19 @@ void mesh_basic::add_triangle_index(triangle_index const& idx)
     connectivity_data.push_back(idx);
 }
 
+void mesh_basic::add_material_name(std::string const& name)
+{
+    material_name = name;
+}
+
 void mesh_basic::add_material_index(int const& m_index)
 {
     material_index = m_index;
+}
+
+void mesh_basic::add_object_name(std::string name)
+{
+    object_name = name;
 }
 
 void mesh_basic::fill_color(vec3 const& c)
@@ -220,7 +248,7 @@ void mesh_basic::fill_normal()
     {
         //get current triangle index
         triangle_index const& tri=connectivity(k_triangle);
-
+std::cout << tri.u0() << " " << tri.u1() << " " << tri.u2() << std::endl;
         //check that the index given have correct values
         ASSERT_CPE(tri.u0()>=0 && tri.u0()<N_vertex,"Incorrect triangle index");
         ASSERT_CPE(tri.u1()>=0 && tri.u1()<N_vertex,"Incorrect triangle index");

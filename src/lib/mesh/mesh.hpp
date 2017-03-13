@@ -48,6 +48,10 @@ public:
     vec2& texture_coord(int index);
     triangle_index connectivity(int index) const;
     triangle_index& connectivity(int index);
+    std::string get_object_name() const;
+    std::string& get_object_name();
+    std::string get_material_name() const;
+    std::string& get_material_name();
     int get_material_index() const;
     int &get_material_index();
 
@@ -56,6 +60,8 @@ public:
     void add_color(vec3 const& c);
     void add_texture_coord(vec2 const& t);
     void add_triangle_index(triangle_index const& idx);
+    void add_object_name(std::string const& name);
+    void add_material_name(std::string const& name);
     void add_material_index(const int &material_index);
 
 };
