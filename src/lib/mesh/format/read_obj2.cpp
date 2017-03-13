@@ -243,11 +243,11 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
     // do the verification for each object
     int N_vertex_total =0;
     int N_texture_total = 0;
-    for(auto& obj : objects)
+   /* for(auto& obj : objects)
     {
         N_vertex_total += obj.data_vertex.size();
         N_texture_total += obj.data_texture.size();
-    }
+    }*/
     for(auto& obj : objects)
     {
         //FIX ME: Add normal support
@@ -266,10 +266,11 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
             {
                 auto const& polygon=obj.data_face_vertex[k_face];
                 int const dim=polygon.size();
-                std::cout << dim << " " << k_face << std::endl;
+
                 assert(dim>=2);
                 for(int k=2;k<dim;++k)
-                    mesh_loaded.add_triangle_index({polygon[0],polygon[1],polygon[k]});
+                    mesh_loaded.add_triangle_index({polygon[0]-N_vertex_total,polygon[1]-N_vertex_total,polygon[k]-N_vertex_total});
+                N_vertex_total += obj.data_vertex.size();
             }
 
             int const N_vertex=obj.data_vertex.size();
@@ -301,8 +302,8 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
                 assert(static_cast<int>(face_texture.size())==dim);
                 for(int k_dim=0;k_dim<dim;++k_dim)
                 {
-                    int const idx_vertex=face_vertex[k_dim];
-                    int const idx_texture=face_texture[k_dim];
+                    int const idx_vertex=face_vertex[k_dim] - N_vertex_total +1;
+                    int const idx_texture=face_texture[k_dim] - N_texture_total +1;
 
                     std::map<int,int>::const_iterator it_vertex=map_vertex.find(idx_vertex);
                     std::map<int,int>::const_iterator it_texture=map_texture.find(idx_texture);
@@ -313,9 +314,9 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
                         map_texture[idx_texture]=counter_max;
 
                         counter_max++;
-                        std::cout << idx_vertex << " ";
-                        assert(static_cast<int>(N_vertex_total)>idx_vertex);
-                        assert(static_cast<int>(N_texture_total)>idx_texture);
+                        std::cout  << " " << idx_vertex << " " ;
+                        assert(static_cast<int>(obj.data_vertex.size())>idx_vertex);
+                        assert(static_cast<int>(obj.data_texture.size())>idx_texture);
                         mesh_loaded.add_vertex(obj.data_vertex[idx_vertex]);
                         mesh_loaded.add_texture_coord(obj.data_texture[idx_texture]);
 
@@ -336,6 +337,8 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
                 }
 
             }
+            N_vertex_total += obj.data_vertex.size();
+            N_texture_total += obj.data_texture.size();
         }
 
         mesh_loaded.add_object_name(obj.object_name);

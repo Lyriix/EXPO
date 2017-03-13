@@ -46,7 +46,7 @@ struct obj_structure2
     std::vector<std::vector<int>> data_face_normal;
 
     std::string material_name;
-    int material_index;
+    int material_index = 0;
 };
 
 /** Split a given string of face f from obj style into a set of values.
@@ -66,8 +66,11 @@ std::vector<obj_structure2> load_file_obj_structure2(std::string const& filename
 void read_vertex_obj2(std::stringstream& tokens,obj_structure2& obj);
 void read_texture_obj2(std::stringstream& tokens,obj_structure2& obj);
 void read_name_obj2(std::stringstream& tokens, obj_structure2& obj);
+void read_material_info(std::stringstream& tokens, obj_structure2& obj, int objects);
 void create_temporary_obj(std::stringstream& tokens);
 void clean_structure(obj_structure2& obj);
+
+void print_obj_info(std::vector<mesh> meshes);
 
 }
 
