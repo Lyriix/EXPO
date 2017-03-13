@@ -42,6 +42,7 @@ mesh_opengl::~mesh_opengl()
 
 void mesh_opengl::fill_vbo(mesh_basic const& m)
 {
+
     if(m.valid_mesh()!=true)
         throw cpe::exception_cpe("Mesh is considered as invalid, cannot fill vbo",EXCEPTION_PARAMETERS_CPE);
 
