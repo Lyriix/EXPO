@@ -186,7 +186,6 @@ std::vector<obj_structure2> load_file_obj_structure2(std::string const& filename
             //skip comments
             if(first_word.length()>0 && first_word[0]!='#')
             {
-                //std::cout << first_word;
                 if(first_word == "mtllib")
                     tokens_buffer>>mtlfile;
 
@@ -220,8 +219,6 @@ std::vector<obj_structure2> load_file_obj_structure2(std::string const& filename
                 //material indexing
                 if(first_word=="usemtl")
                     read_material_info(tokens_buffer, structure, objects);
-
-
             }
 
         }
@@ -243,11 +240,7 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
     // do the verification for each object
     int N_vertex_total =0;
     int N_texture_total = 0;
-    for(auto& obj : objects)
-    {
-        N_vertex_total += obj.data_vertex.size();
-        N_texture_total += obj.data_texture.size();
-    }
+
     for(auto& obj : objects)
     {
         //FIX ME: Add normal support
@@ -257,8 +250,6 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
         bool const is_texture=obj.data_texture.size()>0 && obj.data_face_texture.size()>0;
         //bool const is_normal=obj.data_normal.size()>0 && obj.data_face_normal.size()>0;
 
-        //print obj info
-
         if(is_vertex && !is_texture)
         {
             int const N_face=obj.data_face_vertex.size();
@@ -266,14 +257,15 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
             {
                 auto const& polygon=obj.data_face_vertex[k_face];
                 int const dim=polygon.size();
-                std::cout << dim << " " << k_face << std::endl;
+
                 assert(dim>=2);
                 for(int k=2;k<dim;++k)
-                    mesh_loaded.add_triangle_index({polygon[0],polygon[1],polygon[k]});
+                    mesh_loaded.add_triangle_index({polygon[0]-N_vertex_total,polygon[1]-N_vertex_total,polygon[k]-N_vertex_total});
             }
 
             int const N_vertex=obj.data_vertex.size();
             N_vertex_total += N_vertex;
+
             for(int k_vertex=0;k_vertex<N_vertex;++k_vertex)
                 mesh_loaded.add_vertex(obj.data_vertex[k_vertex]);
         }
@@ -301,8 +293,8 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
                 assert(static_cast<int>(face_texture.size())==dim);
                 for(int k_dim=0;k_dim<dim;++k_dim)
                 {
-                    int const idx_vertex=face_vertex[k_dim];
-                    int const idx_texture=face_texture[k_dim];
+                    int const idx_vertex=face_vertex[k_dim] - N_vertex_total;
+                    int const idx_texture=face_texture[k_dim] - N_texture_total;
 
                     std::map<int,int>::const_iterator it_vertex=map_vertex.find(idx_vertex);
                     std::map<int,int>::const_iterator it_texture=map_texture.find(idx_texture);
@@ -313,9 +305,9 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
                         map_texture[idx_texture]=counter_max;
 
                         counter_max++;
-                        std::cout << idx_vertex << " ";
-                        assert(static_cast<int>(N_vertex_total)>idx_vertex);
-                        assert(static_cast<int>(N_texture_total)>idx_texture);
+                        assert(static_cast<int>(obj.data_vertex.size())>idx_vertex);
+                        assert(static_cast<int>(obj.data_texture.size())>idx_texture);
+
                         mesh_loaded.add_vertex(obj.data_vertex[idx_vertex]);
                         mesh_loaded.add_texture_coord(obj.data_texture[idx_texture]);
 
@@ -327,15 +319,17 @@ std::vector<mesh> load_mesh_file_obj2(const std::string &filename)
                     }
                 }
 
-                int const index_0=map_vertex[face_vertex[0]];
+                int const index_0=map_vertex[face_vertex[0]-N_vertex_total];
                 for(int k_dim=1;k_dim<dim-1;++k_dim)
                 {
-                    int const index_1=map_vertex[face_vertex[k_dim]];
-                    int const index_2=map_vertex[face_vertex[k_dim+1]];
-                    mesh_loaded.add_triangle_index({index_0,index_1,index_2});
-                }
+                    int const index_1=map_vertex[face_vertex[k_dim] - N_vertex_total];
+                    int const index_2=map_vertex[face_vertex[k_dim+1] - N_vertex_total];
 
+                    mesh_loaded.add_triangle_index({index_0, index_1, index_2});
+                }
             }
+            N_vertex_total += obj.data_vertex.size();
+            N_texture_total += obj.data_texture.size();
         }
 
         mesh_loaded.add_object_name(obj.object_name);

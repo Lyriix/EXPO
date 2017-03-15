@@ -248,7 +248,7 @@ void mesh_basic::fill_normal()
     {
         //get current triangle index
         triangle_index const& tri=connectivity(k_triangle);
-std::cout << tri.u0() << " " << tri.u1() << " " << tri.u2() << std::endl;
+        //std::cout << tri.u0() << " " << tri.u1() << " " << tri.u2() << std::endl;
         //check that the index given have correct values
         ASSERT_CPE(tri.u0()>=0 && tri.u0()<N_vertex,"Incorrect triangle index");
         ASSERT_CPE(tri.u1()>=0 && tri.u1()<N_vertex,"Incorrect triangle index");
@@ -402,6 +402,7 @@ bool mesh_basic::valid_mesh() const
 
     //all triangle indices should be in the vertex list with non degenerated triangle
     int const N_vertex=size_vertex();
+    //std::cout << N_vertex << std::endl; std::cout << size_connectivity() << std::endl;
     for(int k=0,N=size_connectivity();k<N;++k)
     {
         triangle_index const& tri = connectivity_data[k];
