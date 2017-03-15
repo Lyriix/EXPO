@@ -21,13 +21,14 @@
 #define MATERIAL_IO_HPP
 
 #include <string>
+#include <vector>
 namespace cpe
 {
 
 class material;
 
 /** Load a material structure from a givem file */
-material load_material_file(std::string const& filename);
+std::vector<material> load_material_file(std::string const& filename);
 
 }
 

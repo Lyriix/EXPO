@@ -32,7 +32,7 @@
 namespace cpe
 {
 
-material load_material_file(const std::string& filename)
+std::vector<material> load_material_file(const std::string& filename)
 {
     if(filename.find(".mtl")!=std::string::npos || filename.find(".MTL")!=std::string::npos)
         return load_material_file_mtl(filename);

@@ -23,6 +23,8 @@
 namespace cpe
 {
 
+std::string material::name() const { return material_basic::name();}
+std::string& material::name() { return material_basic::name();}
 vec3 material::emission() const { return material_basic::emission();}
 vec3& material::emission()      {    return material_basic::emission();}
 vec3 material::ambient() const {   return material_basic::ambient(); }
@@ -33,13 +35,17 @@ vec3 material::specular() const{ return material_basic::specular();}
 vec3& material::specular()      {    return material_basic::specular();}
 float material::shininess() const { return material_basic::shininess(); }
 float& material::shininess()       { return material_basic::shininess(); }
+float material::transparency() const { return material_basic::transparency();}
+float& material::transparency() {return material_basic::transparency();}
 int material::index() const { return material_basic::index(); }
 int& material::index() { return material_basic::index(); }
 
+void material::set_name(std::string const& na){material_basic::set_name(na);}
 void material::set_emission(vec3 const& v){ material_basic::set_emission(v); }
 void material::set_ambient(vec3 const& v) { material_basic::set_ambient(v); }
 void material::set_diffuse(vec3 const& v){  material_basic::set_diffuse(v); }
 void material::set_specular(vec3 const& v){ material_basic::set_specular(v);}
 void material::set_shininess(float const& f){ material_basic::set_shininess(f);}
+void material::set_transparency(const float &t){material_basic::set_transparency(t);}
 void material::set_material_index(int const& mIndex){ material_basic::set_material_index(mIndex);}
 }

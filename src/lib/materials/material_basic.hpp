@@ -35,6 +35,7 @@ namespace cpe{
  * - diffuse light vec 3
  * - specular light vec3
  * - shininess float
+ * - Transparency float
  * //Other properties you may desire
  * Issued from OpenGL PRogramming Guide 8th edition - Chapter 7 - PEARSON
  */
@@ -46,6 +47,9 @@ public:
 
 protected:
 
+    /** Get set material name */
+    std::string name() const;
+    std::string& name();
     /** Get/Set materials emission */
     vec3 emission() const;
     vec3& emission();
@@ -61,21 +65,29 @@ protected:
     /** Get/set shinisses parameter */
     float shininess() const;
     float& shininess();
+    /** Get/set transparency parameter */
+    float transparency() const;
+    float& transparency();
     /** Get/set material index */
     int index() const;
     int& index();
 
 
     /** Set material */
+    void set_name(std::string const& na);
     void set_emission(vec3 const& v);
     void set_ambient(vec3 const& v);
     void set_diffuse(vec3 const& v);
     void set_specular(vec3 const& v);
     void set_shininess(float const& f);
+    void set_transparency(float const& t);
     void set_material_index(int const& mIndex);
+
 
 private:
     //MATERIAL PROPERTIES
+    /** Name of the material */
+    std::string name_material;
     /** Internal Storage for emission light */
     vec3 emission_light;
     /** Internal storage for ambient light */
@@ -86,6 +98,8 @@ private:
     vec3 specular_light;
     /** Internal storage for Shininess light parameter */
     float shininess_parameter;
+    /** Internal stroage for transparency parameter */
+    float transparency_parameter;
 
     /** Index of this material */
     int material_index;

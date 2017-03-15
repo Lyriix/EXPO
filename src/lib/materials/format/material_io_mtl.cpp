@@ -25,7 +25,7 @@
 namespace cpe
 {
 
-mtl_structure load_file_mtl_structure(const std::string &filename)
+std::vector<mtl_structure> load_file_mtl_structure(const std::string &filename)
 {
     std::ifstream fid(filename.c_str());
     if(!fid.good())
@@ -33,8 +33,11 @@ mtl_structure load_file_mtl_structure(const std::string &filename)
 
     std::string buffer;
 
+    std::vector<mtl_structure> structures;
     mtl_structure structure;
 
+    int materials = 0;
+    int newMat = true;
     //read the whole file
     while(fid.good()==true)
     {
@@ -50,13 +53,22 @@ mtl_structure load_file_mtl_structure(const std::string &filename)
             //skip comments
             if(first_word.length()>0 && first_word[0]!='#')
             {
-                //skip newmtl
+                //skip newmtl BAH NON
+                if(first_word=="newmtl")
+                {
+                    if(newMat && materials>0){
+                        structures.push_back(structure);
+                        //clean_structure(structure); No need her, we jsut replace all values
+                    }
+                    read_name_mtl(tokens_buffer, structure, materials);
+                    materials++;
+                }
                 //Ns : phong specular component (Shininess)
                 if( first_word=="Ns")
                     read_phong_mtl(tokens_buffer,structure);
 
                 //Ka : Ambient color weighted by the ambient coefficient
-                if( first_word=="Ka ")
+                if( first_word=="Ka")
                     read_ambient_mtl(tokens_buffer,structure);
 
                 //Kd : Diffuse color weighted by the diffuse coefficient
@@ -72,6 +84,8 @@ mtl_structure load_file_mtl_structure(const std::string &filename)
                     read_emission_mtl(tokens_buffer,structure);
                 //Ni
                 //d
+                if( first_word=="d")
+                    read_transparency_mtl(tokens_buffer, structure);
                 //illum
                 //mapKd
                 //refl
@@ -79,24 +93,44 @@ mtl_structure load_file_mtl_structure(const std::string &filename)
             }
         }
     }
-    return structure;
+    structures.push_back(structure); //push the last one
+    return structures;
 }
 
-material load_material_file_mtl(std::string const& filename)
+std::vector<material> load_material_file_mtl(std::string const& filename)
 {
-    material material_loaded;
+    std::vector<material> materials_loaded;
 
-    mtl_structure mtl = load_file_mtl_structure(filename);
+    std::vector<mtl_structure> mtls = load_file_mtl_structure(filename);
 
-    material_loaded.set_ambient(mtl.data_ambient);
-    material_loaded.set_diffuse(mtl.data_diffuse);
-    material_loaded.set_emission(mtl.data_emission);
-    material_loaded.set_specular(mtl.data_specular);
-    material_loaded.set_shininess(mtl.data_shininess);
+    for(auto const& mtl : mtls)
+    {
+        material material_loaded;
+        //We should do some verifications
+        material_loaded.set_name(mtl.material_name);
+        material_loaded.set_ambient(mtl.data_ambient);
+        material_loaded.set_diffuse(mtl.data_diffuse);
+        material_loaded.set_emission(mtl.data_emission);
+        material_loaded.set_specular(mtl.data_specular);
+        material_loaded.set_shininess(mtl.data_shininess);
+        material_loaded.set_transparency(mtl.data_transparency);
+        material_loaded.set_material_index(mtl.index);
+        materials_loaded.push_back(material_loaded);
+    }
 
-    return material_loaded;
+
+    //print materials info
+    print_materials_info(materials_loaded);
+    return materials_loaded;
 }
 
+void read_name_mtl(std::stringstream &tokens, mtl_structure &mtl, int idx)
+{
+    std::string name;
+    tokens >> name;
+    mtl.material_name = name;
+    mtl.index = idx;
+}
 
 void read_phong_mtl(std::stringstream& tokens, mtl_structure& mtl)
 {
@@ -141,4 +175,25 @@ void read_emission_mtl(std::stringstream& tokens, mtl_structure& mtl)
     mtl.data_emission = Ke;
 }
 
+void read_transparency_mtl(std::stringstream &tokens, mtl_structure &mtl)
+{
+    float d;
+    tokens >> d ;
+    mtl.data_transparency = d;
+}
+
+
+
+void print_materials_info(std::vector<material> materials)
+{
+    std::cout<< "################" << std::endl;
+    std::cout<< "Loaded materials info" << std::endl;
+    for (auto const& mat : materials)
+    {
+        std::cout <<"Material : " << mat.name() <<" of index : " << mat.index() << std::endl;
+        std::cout <<"       Ka : " << mat.ambient() << ", Kd :" << mat.diffuse() << std::endl;
+        std::cout <<"       Ke : " << mat.emission() << ", Ks :" << mat.specular() << std::endl;
+        std::cout <<"       Ns : " << mat.shininess() <<", d : " << mat.transparency() << std::endl;
+    }
+}
 }

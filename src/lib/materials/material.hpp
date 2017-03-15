@@ -30,6 +30,9 @@ class material : public material_basic
 public:
     using material_basic::material_basic;
 
+    /** Get set material name */
+    std::string name() const;
+    std::string& name();
     /** Get/Set materials emission */
     vec3 emission() const;
     vec3& emission();
@@ -45,16 +48,21 @@ public:
     /** Get/set shinisses parameter */
     float shininess() const;
     float& shininess();
+    /** Get/set transparency parameter */
+    float transparency() const;
+    float& transparency();
     /** Get/set material index */
     int index() const;
     int& index();
 
     /** Set material */
+    void set_name(std::string const& na);
     void set_emission(vec3 const& v);
     void set_ambient(vec3 const& v);
     void set_diffuse(vec3 const& v);
     void set_specular(vec3 const& v);
     void set_shininess(float const& f);
+    void set_transparency(float const& t);
     void set_material_index(int const& mIndex);
 };
 }

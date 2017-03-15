@@ -20,28 +20,33 @@
 #define MATERIAL_IO_OBJ_HPP
 
 #include "../../3d/vec3.hpp"
-
+#include <vector>
 namespace cpe
 {
 
 class material;
 
 /** Load  material informations from an MTL file */
-material load_material_file_mtl(std::string const& filename);
+std::vector<material> load_material_file_mtl(std::string const& filename);
 
 /** an mtl structure following the definition of an mtl file */
 struct mtl_structure
 {
+    std::string material_name;
     vec3 data_emission; //Ke
     vec3 data_ambient; //Ka
     vec3 data_diffuse; //Kd
     vec3 data_specular; //Ks
     float data_shininess; //Ns
+    float data_transparency; //d
+    int index;
 };
 
 /** Read an mtl file and return a material structure */
-mtl_structure load_file_mtl_structure(std::string const& filename);
+std::vector<mtl_structure> load_file_mtl_structure(std::string const& filename);
 
+/** read material name */
+void read_name_mtl(std::stringstream& tokens, mtl_structure& mtl, int idx);
 /** Read phong specular component Ns */
 void read_phong_mtl(std::stringstream& tokens, mtl_structure& mtl);
 /** Ka : read ambient color */
@@ -52,6 +57,12 @@ void read_diffuse_mtl(std::stringstream& tokens, mtl_structure& mtl);
 void read_specular_mtl(std::stringstream& tokens, mtl_structure& mtl);
 /** Read emission parameter Ke */
 void read_emission_mtl(std::stringstream& tokens, mtl_structure& mtl);
+/** Read transparency parameter d */
+void read_transparency_mtl(std::stringstream& tokens, mtl_structure& mtl);
+
+void clean_structure(mtl_structure &mat);
+void print_materials_info(std::vector<material> materials);
+
 }
 
 #endif
