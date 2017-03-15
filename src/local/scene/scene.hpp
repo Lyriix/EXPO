@@ -73,7 +73,7 @@ private:
                     SighPupi_pivot_material;*/
     std::vector<cpe::mesh> mesh_eye;
     std::vector<cpe::mesh_opengl> mesh_eye_opengl;
-    cpe::material material_eye;
+    std::vector<cpe::material> material_eye;
 
     /** Variable for Dragon */
     float tps=0.0f;

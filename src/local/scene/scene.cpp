@@ -15,6 +15,8 @@
 #include <cmath>
 #include <string>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 using namespace cpe;
@@ -29,33 +31,56 @@ void scene::load_scene()
     // Preload default structure               //
     //*****************************************//
     texture_default = load_texture_file("data/white.jpg");
-     shader_program_id = read_shader("shaders/shader_mesh.vert",
-                                    "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();
-   /* shader_program_id = read_shader("shaders/shader_material.vert",
-                                    "shaders/shader_material.frag"); PRINT_OPENGL_ERROR();*/
+    /*shader_program_id = read_shader("shaders/shader_mesh.vert",
+                                    "shaders/shader_mesh.frag"); PRINT_OPENGL_ERROR();*/
+    shader_program_id = read_shader("shaders/shader_material.vert",
+                                    "shaders/shader_material.frag"); PRINT_OPENGL_ERROR();
 
     //******************************************//
     //OBJ Mesh                                  //
     //***************************************** //
-    mesh_eye = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/sight3.obj");
-    std::vector<mesh>::iterator it_mesh = mesh_eye.begin();
+    mesh_eye = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/sight.obj");
+
     std::vector<mesh_opengl>::iterator it_mgl = mesh_eye_opengl.begin();
 
     mesh_eye_opengl.assign(mesh_eye.size(),mesh_opengl());
     for(int i=0; i< mesh_eye.size(); i++)
     {
         mesh_eye.at(i).transform_apply_scale(0.2f);
-        mesh_eye.at(i).fill_color_normal();
+        mesh_eye.at(i).fill_color(vec3(1.0f,1.0f,1.0f));
         mesh_eye_opengl.at(i).fill_vbo(mesh_eye.at(i));
     }
 
-    /*SighConj_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighConj_pivot.obj");
-        SighConj_pivot.transform_apply_scale(0.002f);
-        SighConj_pivot_opengl.fill_vbo(SighConj_pivot);*/
 
     //**********//
     // MATERIALS //
     //**********//
+    material_eye = load_material_file("/home/charly/workspace/EXPO/data/Blender/eye3d/sight.mtl");
+
+    //Link material index and object_material_index by name
+    //That should be done while reading the .obj file but in a time coherent work with the result its done in the hard way at this point
+
+    std::map<std::string,int> map_material;
+    for(auto const& mat : material_eye)
+    {
+        map_material[mat.name()] = mat.index();
+    }
+    for(auto& mesh : mesh_eye)
+    {
+        std::map<std::string,int>::iterator it_map = map_material.find(mesh.get_material_name());
+        if(it_map != map_material.end())
+        {
+            int idx = it_map->second; //map_material.at(it_map);
+            mesh.add_material_index(idx);
+        }
+
+    }
+    std::cout << "REPRINT OBJ INFO WITH MATERIAL INDEX LOADED THIS TIME" << std::endl;
+    print_obj_info(mesh_eye);
+
+
+
+
 
     //*****************************************//
     // Generate user defined mesh              //
@@ -77,84 +102,49 @@ void scene::draw_scene()
     glUniformMatrix4fv(get_uni_loc(shader_program_id,"normal_matrix"),1,false,cam.normal.pointer());           PRINT_OPENGL_ERROR();
 
 
-
-
-
-
     //Draw the meshes
 
-    /*for(auto& mgl : mesh_eye_opengl)
+    //send material info
+
+    //glUniform1i(get_uni_loc(shader_program_id,"NumMaterials"),material_eye.size()); PRINT_OPENGL_ERROR();
+    //glUniform1i(get_uni_loc(shader_program_id,"NumMaterials"),1); PRINT_OPENGL_ERROR();
+    for(auto& mat :material_eye)
     {
-        glBindTexture(GL_TEXTURE_2D,texture_default);
-        mgl.draw();
-    }*/
+        //material mat = material_eye.at(0);
+        //std::cout << mat.index() << std::endl;
+        std::stringstream ss;
+        ss << mat.index();
+        std::string e = "material["+ss.str() + "].emission";
+        std::string a = "material["+ss.str() + "].ambient";
+        std::string d = "material["+ss.str() + "].diffuse";
+        std::string s = "material["+ss.str() + "].specular";
+        std::string shi = "material["+ss.str() + "].shininess";
+        std::string tr = "material["+ss.str() + "].transparency";
+        const char *c_str_emission = e.c_str();
+        const char *c_str_ambient = a.c_str();
+        const char *c_str_diffuse = d.c_str();
+        const char *c_str_specular = s.c_str();
+        const char *c_str_shininess = shi.c_str();
+        const char *c_str_transparency = tr.c_str();
+
+
+
+        glUniform3fv(get_uni_loc(shader_program_id, c_str_emission),1,mat.emission().pointer()); PRINT_OPENGL_ERROR();
+        glUniform3fv(get_uni_loc(shader_program_id, c_str_ambient),1,mat.ambient().pointer()); PRINT_OPENGL_ERROR();
+        glUniform3fv(get_uni_loc(shader_program_id, c_str_diffuse),1,mat.diffuse().pointer()); PRINT_OPENGL_ERROR();
+        glUniform3fv(get_uni_loc(shader_program_id, c_str_specular),1,mat.specular().pointer()); PRINT_OPENGL_ERROR();
+        glUniform1f(get_uni_loc(shader_program_id, c_str_shininess),mat.shininess()); PRINT_OPENGL_ERROR();
+        glUniform1f(get_uni_loc(shader_program_id, c_str_transparency),mat.transparency()); PRINT_OPENGL_ERROR();
+    }
+    //send all the info to the shader then in the loop only send the index
     int l = 0;
     for(int i=l; i<mesh_eye.size() ; ++i)
     {
-       // glBindTexture(GL_TEXTURE_2D,texture_default);
+        // glBindTexture(GL_TEXTURE_2D,texture_default);
+        //send material info
+        glUniform1i(get_uni_loc(shader_program_id,"index_mat"),i);
         mesh_eye_opengl.at(i).draw();
     }
-    //texture_SighConj_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
-
-    /* vec3 di = vec3(1.0,0.5,0.2);
-    vec3 am = vec3(1.0,0.5,0.2);
-    float N = 0.5;
-
-    vec3& em  =  SighConj_pivot_material.emission();
-    glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());                        PRINT_OPENGL_ERROR();*/
-    //glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighConj_pivot_opengl.draw();
-/*
-
-    texture_SighCorn = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
-    glBindTexture(GL_TEXTURE_2D,texture_SighCorn); PRINT_OPENGL_ERROR();
-    //SighCorn_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighCoro_pivot_opengl.draw();
-
-    texture_SighEsc1 = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSecT.png");
-    glBindTexture(GL_TEXTURE_2D,texture_SighEsc1);
-    SighEsc1_opengl.draw();
-
-    texture_SighEsc2 = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSecT.png");
-    glBindTexture(GL_TEXTURE_2D,texture_SighEsc2);
-    //SighEsc2_opengl.draw();
-
-    //texture_SighPupi_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/")
-    em  = vec3(0.5,0.0,1.0);// SighPupi_pivot_material.emission();
-    glUniform3fv(get_uni_loc(shader_program_id,"material[0].emission"),1,em.pointer());
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    SighPupi_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighReti_pivot_opengl.draw();
-
-    texture_SighSkin_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighSkiT.png");
-    glBindTexture(GL_TEXTURE_2D,texture_SighSkin_pivot);
-    //SighSkin_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighSkul_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe01_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe02_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe03_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe04_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe05_pivot_opengl.draw();
-
-    glBindTexture(GL_TEXTURE_2D,texture_default);
-    //SighTe06_pivot_opengl.draw();*/
-
 }
 
 
