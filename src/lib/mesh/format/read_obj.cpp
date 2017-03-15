@@ -101,7 +101,7 @@ void read_material_info(std::stringstream& tokens, obj_structure2& obj, int obje
     std::string mtlname;
     tokens >> mtlname;
     obj.material_name = mtlname;
-    obj.material_index = objects;
+    obj.material_index = 0;//objects;
     //read the corresponding material in mtl file thanks to name and index
 
 }
