@@ -37,16 +37,16 @@ void scene::load_scene()
     //******************************************//
     //OBJ Mesh                                  //
     //***************************************** //
-    mesh_eye = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/cube.obj");
+    mesh_eye = load_mesh_file_obj2("/home/charly/workspace/EXPO/data/Blender/eye3d/sight3.obj");
     std::vector<mesh>::iterator it_mesh = mesh_eye.begin();
     std::vector<mesh_opengl>::iterator it_mgl = mesh_eye_opengl.begin();
 
-    mesh_eye_opengl.assign(3,mesh_opengl());
+    mesh_eye_opengl.assign(mesh_eye.size(),mesh_opengl());
     for(int i=0; i< mesh_eye.size(); i++)
     {
-        mesh_eye.at(i).transform_apply_scale(1.0f);
+        mesh_eye.at(i).transform_apply_scale(0.2f);
         mesh_eye.at(i).fill_color_normal();
-        mesh_eye_opengl.at(i).fill_vbo(mesh_eye.at(i));std::cout << "coucou" << std::endl;
+        mesh_eye_opengl.at(i).fill_vbo(mesh_eye.at(i));
     }
 
     /*SighConj_pivot = load_mesh_file("data/Blender/eye3d/object/obj/SighConj_pivot.obj");
@@ -88,11 +88,11 @@ void scene::draw_scene()
         glBindTexture(GL_TEXTURE_2D,texture_default);
         mgl.draw();
     }*/
-    for(int i=1; i<3 ; ++i)
+    int l = 0;
+    for(int i=l; i<mesh_eye.size() ; ++i)
     {
        // glBindTexture(GL_TEXTURE_2D,texture_default);
-       // mesh_eye_opengl.at(i).draw();
-
+        mesh_eye_opengl.at(i).draw();
     }
     //texture_SighConj_pivot = load_texture_file("/home/charly/workspace/EXPO/data/Blender/eye3d/textures/SighIriT.png");
 
