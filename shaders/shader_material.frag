@@ -9,16 +9,18 @@ varying vec4 color;
 
 uniform sampler2D texture;
 
-uniform vec3 light=vec3(0.5f,0.3f,5.0f);
+uniform vec3 light=vec3(1.0f,1.0f,100.0f);
 
 struct MaterialProperties {
-    vec3 emission;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    float shininess;
+    vec3 emission; //Ke
+    vec3 ambient; //Ka
+    vec3 diffuse; //Kd
+    vec3 specular; //Ks
+    float shininess; //Ns
+    float transparency; //d
 };
-const int NumMaterials = 15;
+const int NumMaterials = 9;
+uniform int index_mat;
 //flat in int MatIndex;
 uniform MaterialProperties material[NumMaterials];
 
@@ -32,26 +34,26 @@ void main (void)
     vec3 reflected_light=reflect(-vertex_to_light,n);
     vec3 user_to_vertex=normalize(-p);
 
-    float diffuse_term=0.8f*clamp(abs(dot(n,vertex_to_light)),0.0f,1.0f);
-    float specular_term=0.2f*pow(clamp(dot(reflected_light,user_to_vertex),0.0f,1.0f),128.0f);
-    float ambiant_term=0.4f;
+    float diffuse_term=clamp(abs(dot(n,vertex_to_light)),0.0f,1.0f);//*0.8f
+    float specular_term=pow(clamp(dot(reflected_light,user_to_vertex),0.0f,1.0f),128.0f);//*0.2f
+    float ambiant_term=1.0f; //0.4f
 
 
     vec3 scatteredLight = vec3(0.0);
     vec3 reflectedLight = vec3(0.0);
 
-    vec3 em = material[0].emission;
+    vec3 em = material[index_mat].emission;
     scatteredLight =
-                ambiant_term * material[0].ambient
-                + light * diffuse_term *material[0].diffuse ;
+                ambiant_term * material[index_mat].ambient
+                +  diffuse_term *material[index_mat].diffuse * light ;
     reflectedLight =
-                light * material[0].specular * specular_term;
+                material[index_mat].specular * specular_term * light;
 
 
 
-   vec3 rgb = min(material[0].emission + color.rgb *scatteredLight + reflectedLight, vec3(1.0));
+   vec3 rgb = min(material[index_mat].emission + color.rgb *scatteredLight + reflectedLight, vec3(1.0f,1.0f,1.0f));
 
-    gl_FragColor = vec4(rgb, color.a);
+    gl_FragColor = vec4(rgb, material[index_mat].transparency);
 }
 
 
