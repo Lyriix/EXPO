@@ -10,7 +10,7 @@
 #include <QAbstractTableModel>
 #include <QString>
 
-const int COLS = 3;
+const int COLS = 1;
 const int ROWS = 2;
 class myListModel : public QAbstractTableModel //reauires the implementation of three abstract methods
 {
@@ -28,10 +28,13 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
+    void fill_objects_names(std::vector<std::string> const& names);
+
+
 
 private:
     QString m_gridData[ROWS][COLS]; //holds text entered into QTable View // array Use to store our data
-
+    std::vector<QString> objects_name;
 
 signals:
     void editCompleted(const QString &); //transfer the modified text to the window title

@@ -22,6 +22,7 @@ myWindow::myWindow(QWidget *parent)
         //Setup window layout
         ui->setupUi(this);
 
+        /** Open Gl context */
         //Create openGL context
         QGLFormat qglFormat;
         qglFormat.setVersion(1,2);
@@ -32,12 +33,19 @@ myWindow::myWindow(QWidget *parent)
         //Add the OpenGL Widget into the layout
         ui->layout_scene->addWidget(glWidget);
 
-        //add the List/tree into the layout made for
+        /** List Widget */
+        //add the List into the layout made for
         //myModel = new myTreeModel();
         myModel = new myListModel(this);
-        ui->tableView->setModel( myModel );
 
-        /** TREE */
+       // names_obj.push_back("ooo");
+       // names_obj.push_back("coucou");
+        //std::vector<std::string> names_obj = glWidget->get_scene().get_meshes_names();
+       //myModel->fill_objects_names(names_obj);
+        //ui->tableView->setModel( myModel );
+
+
+        /** Tree Widget */
         standardModel = new QStandardItemModel ;
         QStandardItem *rootNode = standardModel->invisibleRootItem();
         //defining a couple of items
@@ -63,8 +71,7 @@ myWindow::myWindow(QWidget *parent)
         //register the model
         ui->treeView->setModel(standardModel);
         ui->treeView->expandAll();
-
-       selectionModel = ui->treeView->selectionModel();
+        selectionModel = ui->treeView->selectionModel();
 
 
     }
@@ -80,8 +87,7 @@ myWindow::myWindow(QWidget *parent)
     connect(myModel, SIGNAL(editCompleted(const QString &)), this, SLOT(setWindowTitle(const QString &)));
     connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-
-
+    connect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()));
 }
 
 myWindow::~myWindow()
@@ -108,6 +114,8 @@ void myWindow::showWindowTitle(const QString & title)
     setWindowTitle(title);
 }
 
+
+
 void myWindow::selectionChangedSlot(const QItemSelection &, const QItemSelection &)
 {
     //get the text of the selected item
@@ -124,4 +132,12 @@ void myWindow::selectionChangedSlot(const QItemSelection &, const QItemSelection
     QString showString = QString("%1, Level %2").arg(selectedText)
                          .arg(hierarchyLevel);
     setWindowTitle(showString);
+}
+
+void myWindow::set_model_list()
+{
+    //std::cout << glWidget->get_scene().get_meshes_names()[0] << std::endl;
+    //myModel->rowCount();
+    myModel->fill_objects_names(glWidget->get_scene().get_meshes_names());
+    ui->tableView->setModel( myModel );
 }

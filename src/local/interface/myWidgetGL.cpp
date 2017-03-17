@@ -13,7 +13,7 @@
 #include <cmath>
 #include <iostream>
 #include <unistd.h>
-
+#include<QtCore>
 
 void myWidgetGL::paintGL()
 {
@@ -116,13 +116,13 @@ myWidgetGL::~myWidgetGL()
 
 void myWidgetGL::initializeGL()
 {
-
     //Init OpenGL
     setup_opengl();
 
     //Init Scene 3D
     scene_3d.set_widget(this);
     scene_3d.load_scene();
+    emit gl_loaded();
 
     //Activate depth buffer
     glEnable(GL_DEPTH_TEST); PRINT_OPENGL_ERROR();
@@ -153,6 +153,7 @@ void myWidgetGL::setup_opengl()
 
     axes.init();
 }
+
 
 void myWidgetGL::setup_glew()
 {

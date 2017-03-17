@@ -5,6 +5,7 @@
 #include <QBrush>
 #include <QFont>
 #include <QTime>
+#include <iostream>
 
 myListModel::myListModel(QObject *parent)
     :QAbstractTableModel(parent)
@@ -16,7 +17,7 @@ myListModel::~myListModel()
 
 int myListModel::rowCount(const QModelIndex & /*parent*/) const
 {
-    return ROWS;
+    return objects_name.size();
 }
 
 int myListModel::columnCount(const QModelIndex & /*parent*/) const
@@ -32,7 +33,10 @@ QVariant myListModel::data(const QModelIndex &index, int role) const
 
     if( role == Qt::DisplayRole )
     {
-        return QString("Row%1,Column%2").arg(row).arg(col);
+        if(  col == 0)
+        {
+            return objects_name.at(row);
+        }
     }
 
     return QVariant();
@@ -62,4 +66,13 @@ bool myListModel::setData(const QModelIndex &index, const QVariant &value, int r
 Qt::ItemFlags myListModel::flags(const QModelIndex &index) const
 {
     return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
+}
+
+void myListModel::fill_objects_names(std::vector<std::string> const& names)
+{
+    for(auto & obj_name : names)
+    {
+        QString qstr = QString::fromStdString(obj_name);
+        objects_name.push_back(qstr);
+    }
 }

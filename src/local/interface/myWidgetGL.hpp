@@ -90,6 +90,10 @@ private:
     /** Storage class for the camera data */
     cpe::camera_matrices camera_data;
 
+signals:
+    void gl_loaded();
+
+
 };
 
 #endif

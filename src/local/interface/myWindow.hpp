@@ -7,7 +7,7 @@
 #include <QMainWindow>
 #include <QListWidget>
 #include <QAbstractTableModel>
-
+#include <QString>
 
 
 //forward declaration
@@ -31,7 +31,7 @@ public:
     myWindow(QWidget *parent=NULL);
     ~myWindow();
 
-
+    //std::vector<std::string> get_object_names();
 
 private slots:
 
@@ -42,6 +42,8 @@ private slots:
     /** Set the Wireframe mode for the meshes */
     void action_wireframe();
 
+    void set_model_list();
+
 
 private:
 
@@ -51,7 +53,8 @@ private:
     myWidgetGL *glWidget;
     /** The list widget */
     //myTreeModel *myModel;
-    QAbstractTableModel *myModel;
+    //QAbstractTableModel *myModel;
+    myListModel *myModel;
     /** The tree widget */
     QStandardItemModel *standardModel;
     QItemSelectionModel *selectionModel;
