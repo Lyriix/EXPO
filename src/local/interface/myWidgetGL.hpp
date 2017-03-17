@@ -31,11 +31,15 @@ public:
     void change_draw_state();
     /** Set the wireframe on/off */
     void wireframe(bool est_actif);
+
     /** Get the current cameras values */
     cpe::camera_matrices const& camera() const;
 
     /** Load a texture given by its filename */
     GLuint load_texture_file(std::string const& filename);
+
+    /** Accessor for the scene3d from the list view for eample */
+    scene get_scene() const;
 
 protected:
 

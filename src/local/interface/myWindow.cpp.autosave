@@ -22,6 +22,7 @@ myWindow::myWindow(QWidget *parent)
         //Setup window layout
         ui->setupUi(this);
 
+        /** Open Gl context */
         //Create openGL context
         QGLFormat qglFormat;
         qglFormat.setVersion(1,2);
@@ -32,12 +33,13 @@ myWindow::myWindow(QWidget *parent)
         //Add the OpenGL Widget into the layout
         ui->layout_scene->addWidget(glWidget);
 
-        //add the List/tree into the layout made for
+        /** List Widget */
+        //add the List into the layout made for
         //myModel = new myTreeModel();
         myModel = new myListModel(this);
         ui->tableView->setModel( myModel );
 
-        /** TREE */
+        /** Tree Widget */
         standardModel = new QStandardItemModel ;
         QStandardItem *rootNode = standardModel->invisibleRootItem();
         //defining a couple of items
@@ -63,8 +65,7 @@ myWindow::myWindow(QWidget *parent)
         //register the model
         ui->treeView->setModel(standardModel);
         ui->treeView->expandAll();
-
-       selectionModel = ui->treeView->selectionModel();
+        selectionModel = ui->treeView->selectionModel();
 
 
     }

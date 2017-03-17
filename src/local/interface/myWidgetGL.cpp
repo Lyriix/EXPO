@@ -178,6 +178,7 @@ void myWidgetGL::change_draw_state()
     draw_state=!draw_state;
     updateGL();
 }
+
 void myWidgetGL::wireframe(bool const is_wireframe)
 {
     if(is_wireframe==true)
@@ -187,6 +188,7 @@ void myWidgetGL::wireframe(bool const is_wireframe)
 
     updateGL();
 }
+
 
 
 void myWidgetGL::resizeGL(int const width,int const height)
@@ -267,4 +269,9 @@ void myWidgetGL::draw_axes()
     glLineWidth(2.0);
     axes.draw();
     glLineWidth(1.0);
+}
+
+scene myWidgetGL::get_scene() const
+{
+    return scene_3d;
 }

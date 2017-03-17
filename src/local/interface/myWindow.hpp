@@ -5,7 +5,8 @@
 
 
 #include <QMainWindow>
-
+#include <QListWidget>
+#include <QAbstractTableModel>
 
 
 
@@ -15,6 +16,10 @@ namespace Ui
 class MainWindow;
 }
 class myWidgetGL;
+class myListModel;
+
+class QStandardItemModel;
+class QItemSelection;
 
 /** Declaration of the Window class */
 class myWindow: public QMainWindow
@@ -37,16 +42,25 @@ private slots:
     /** Set the Wireframe mode for the meshes */
     void action_wireframe();
 
+
 private:
 
     /** Layout for the Window */
     Ui::MainWindow *ui;
     /** The OpenGL Widget */
     myWidgetGL *glWidget;
+    /** The list widget */
+    //myTreeModel *myModel;
+    QAbstractTableModel *myModel;
+    /** The tree widget */
+    QStandardItemModel *standardModel;
+    QItemSelectionModel *selectionModel;
 
+private slots:
+    void selectionChangedSlot(const QItemSelection & newSelection, const QItemSelection & oldSelection);
 
-
-
+public slots :
+    void showWindowTitle(const QString& title);
 
 };
 
