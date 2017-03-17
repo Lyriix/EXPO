@@ -39,6 +39,10 @@ public:
     /** Set the pointer to the parent Widget */
     void set_widget(myWidgetGL* widget_param);
 
+    /** Get meshes */
+    std::vector<cpe::mesh> get_meshes();
+
+
 
 private:
 

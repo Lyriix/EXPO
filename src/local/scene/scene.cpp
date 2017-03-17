@@ -163,3 +163,8 @@ void scene::set_widget(myWidgetGL* widget_param)
     pwidget=widget_param;
 }
 
+
+std::vector<cpe::mesh> scene::get_meshes()
+{
+    return mesh_eye;
+}
