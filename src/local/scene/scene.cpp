@@ -79,9 +79,6 @@ void scene::load_scene()
     print_obj_info(mesh_eye);
 
 
-
-
-
     //*****************************************//
     // Generate user defined mesh              //
     //*****************************************//
@@ -164,7 +161,14 @@ void scene::set_widget(myWidgetGL* widget_param)
 }
 
 
-std::vector<cpe::mesh> scene::get_meshes()
+std::vector<std::string> scene::get_meshes_names()
 {
-    return mesh_eye;
+    std::vector<std::string> names;
+    std::cout << "@@@@@@@@@"<<std::endl;
+    for(auto & mesh : mesh_eye)
+    {
+        names.push_back(mesh.get_material_name());
+        std::cout <<"###"<< mesh.get_object_name() << std::endl;
+    }
+    return names;
 }

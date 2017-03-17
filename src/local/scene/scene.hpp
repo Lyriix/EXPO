@@ -40,9 +40,7 @@ public:
     void set_widget(myWidgetGL* widget_param);
 
     /** Get meshes */
-    std::vector<cpe::mesh> get_meshes();
-
-
+    std::vector<std::string> get_meshes_names();
 
 private:
 
