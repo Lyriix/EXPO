@@ -9,7 +9,7 @@ varying vec4 color;
 
 uniform sampler2D texture;
 
-uniform vec3 light=vec3(1.0f,1.0f,100.0f);
+uniform vec3 light=vec3(1.0f,1.0f,1.0f);
 
 struct MaterialProperties {
     vec3 emission; //Ke
