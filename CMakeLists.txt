@@ -32,7 +32,8 @@ ADD_DEFINITIONS( -Wall -Wextra -Wfloat-equal -Wunreachable-code -std=c++11)
 SET(UI src/local/interface/mainwindow.ui)
 SET(MOC src/lib/interface/application_qt.hpp
         src/local/interface/myWindow.hpp
-        src/local/interface/myWidgetGL.hpp)
+        src/local/interface/myWidgetGL.hpp
+        src/local/interface/myListModel.hpp)
 
 QT4_WRAP_CPP(MOC_GENERATED ${MOC})
 QT4_WRAP_UI(UI_GENERATED ${UI})
