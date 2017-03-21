@@ -19,7 +19,7 @@ struct MaterialProperties {
     float shininess; //Ns
     float transparency; //d
 };
-const int NumMaterials = 9;
+const int NumMaterials = 15;
 uniform int index_mat;
 //flat in int MatIndex;
 uniform MaterialProperties material[NumMaterials];
