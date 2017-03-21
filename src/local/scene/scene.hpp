@@ -16,11 +16,12 @@
 #include "../../lib/interface/camera_matrices.hpp"
 
 #include "../../lib/materials/material.hpp"
-
+#include "../../lib/intersection/PickingRay.hpp"
 #include <vector>
 
 
 class myWidgetGL;
+class PickingRay;
 
 class scene
 {
@@ -41,6 +42,9 @@ public:
 
     /** Get meshes */
     std::vector<std::string> get_meshes_names();
+    std::vector<cpe::mesh>& get_meshes();
+
+
 
 private:
 
