@@ -41,6 +41,9 @@ public:
     /** Accessor for the scene3d from the list view for eample */
     scene get_scene() const;
 
+    /** Intersections */
+    void picking(float screenX, float screenY);//, cpe::PickingRay pickingRay);
+
 protected:
 
     /** Setup the OpenGL rendering mode */

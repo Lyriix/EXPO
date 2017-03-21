@@ -17,7 +17,7 @@ myListModel::~myListModel()
 
 int myListModel::rowCount(const QModelIndex & /*parent*/) const
 {
-    return objects_name.size();
+    return 3;//objects_name.size();
 }
 
 int myListModel::columnCount(const QModelIndex & /*parent*/) const

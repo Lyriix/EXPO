@@ -11,8 +11,10 @@
 #include "../../lib/common/error_handling.hpp"
 #include "ui_mainwindow.h"
 
-
+#include <QDebug>
 #include <iostream>
+#include <stdlib.h>
+#include <unistd.h>
 
 myWindow::myWindow(QWidget *parent)
     :QMainWindow(parent),ui(new Ui::MainWindow)
@@ -35,14 +37,8 @@ myWindow::myWindow(QWidget *parent)
 
         /** List Widget */
         //add the List into the layout made for
-        //myModel = new myTreeModel();
-        myModel = new myListModel(this);
+        myModel = new myListModel();
 
-       // names_obj.push_back("ooo");
-       // names_obj.push_back("coucou");
-        //std::vector<std::string> names_obj = glWidget->get_scene().get_meshes_names();
-       //myModel->fill_objects_names(names_obj);
-        //ui->tableView->setModel( myModel );
 
 
         /** Tree Widget */
@@ -85,9 +81,10 @@ myWindow::myWindow(QWidget *parent)
     connect(ui->draw,SIGNAL(clicked()),this,SLOT(action_draw()));
     connect(ui->wireframe,SIGNAL(clicked()),this,SLOT(action_wireframe()));
     connect(myModel, SIGNAL(editCompleted(const QString &)), this, SLOT(setWindowTitle(const QString &)));
-    connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-    connect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()));
+   /* connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &))); */
+    connect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()), Qt::QueuedConnection);
+
 }
 
 myWindow::~myWindow()
@@ -101,6 +98,7 @@ void myWindow::action_quit()
 void myWindow::action_draw()
 {
     glWidget->change_draw_state();
+    //qDebug() << glWidget->isEnabled();
 }
 
 void myWindow::action_wireframe()
@@ -138,6 +136,13 @@ void myWindow::set_model_list()
 {
     //std::cout << glWidget->get_scene().get_meshes_names()[0] << std::endl;
     //myModel->rowCount();
+    //qDebug() << "AAA";
+    //usleep(1000000);
     myModel->fill_objects_names(glWidget->get_scene().get_meshes_names());
     ui->tableView->setModel( myModel );
+    //glWidget->updateGL();
+    //qDebug() << "BBB";
+
+    //disconnect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()));
+
 }

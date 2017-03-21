@@ -22,7 +22,8 @@ void myWidgetGL::paintGL()
 
     //clear screen
     glViewport (0, 0, nav.screen_size_x(),nav.screen_size_y()); PRINT_OPENGL_ERROR();
-    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);                      PRINT_OPENGL_ERROR();
+    //glClearColor (1.0f, 1.0f, 1.0f, 1.0f);                      PRINT_OPENGL_ERROR();
+    glClearColor (0.0f, 0.0f, 0.0f, 1.0f);                      PRINT_OPENGL_ERROR();
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);        PRINT_OPENGL_ERROR();
 
     //draw 3D scene
@@ -31,7 +32,7 @@ void myWidgetGL::paintGL()
 
     //draw indicating axes
     draw_axes();
-
+    swapBuffers();
 }
 
 
@@ -112,7 +113,8 @@ myWidgetGL::myWidgetGL(const QGLFormat& format,QGLWidget *parent) :
 }
 
 myWidgetGL::~myWidgetGL()
-{}
+{
+}
 
 void myWidgetGL::initializeGL()
 {
@@ -122,10 +124,11 @@ void myWidgetGL::initializeGL()
     //Init Scene 3D
     scene_3d.set_widget(this);
     scene_3d.load_scene();
-    emit gl_loaded();
+
 
     //Activate depth buffer
     glEnable(GL_DEPTH_TEST); PRINT_OPENGL_ERROR();
+   // emit gl_loaded();
 }
 
 GLuint myWidgetGL::load_texture_file(std::string const& filename)
@@ -203,7 +206,7 @@ void myWidgetGL::mousePressEvent(QMouseEvent *event)
 {
     nav.x_previous()=event->x();
     nav.y_previous()=event->y();
-
+    picking(nav.x_previous(),nav.y_previous());
     updateGL(); PRINT_OPENGL_ERROR();
 }
 
@@ -275,4 +278,15 @@ void myWidgetGL::draw_axes()
 scene myWidgetGL::get_scene() const
 {
     return scene_3d;
+}
+
+
+void myWidgetGL::picking(float screenX, float screenY)//, cpe::PickingRay pickingRay)
+{
+    std::pair<cpe::vec3,cpe::vec3> picked = nav.ray_world_space_cam1(screenX,screenY);
+    std::cout << picked.first << std::endl;
+    std::cout << picked.second << std::endl;
+    //picked.first is center  in world space ( camera posision)
+    //picked.second is the ray pointed in world space
+    cpe::vec3 d = cpe::vec3(picked.second.x() - picked.first.x(),picked.second.y() - picked.first.y(), picked.second.z() - picked.first.z() );
 }
