@@ -41,8 +41,9 @@ public:
     /** Accessor for the scene3d from the list view for eample */
     scene get_scene() const;
 
-    /** Intersections */
-    void picking(float screenX, float screenY);//, cpe::PickingRay pickingRay);
+    /** Accesort to the navigation tool */
+    cpe::navigator_tool get_nav() const;
+
 
 protected:
 
@@ -57,6 +58,8 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     /** Function called when the mouse is moved */
     void mouseMoveEvent(QMouseEvent *event);
+    /** Function called when a mouse button is releaser */
+    void mouseReleaseEvent(QMouseEvent *);
     /** Function called in a timer loop */
     void timerEvent(QTimerEvent *event);
     /** Function called when keyboard is pressed */

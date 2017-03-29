@@ -49,6 +49,7 @@ void myWidgetGL::keyPressEvent(QKeyEvent *event)
     {
         std::cout<<"\n[EXIT OK]\n\n"<<std::endl;
         this->window()->close();
+        scene_3d.dealloc();
     }
 
     QGLWidget::keyPressEvent(event);
@@ -56,6 +57,13 @@ void myWidgetGL::keyPressEvent(QKeyEvent *event)
 
 }
 
+void myWidgetGL::mousePressEvent(QMouseEvent *event)
+{
+    nav.x_previous()=event->x();
+    nav.y_previous()=event->y();
+    scene_3d.picking(event->x(),event->y());
+    updateGL(); PRINT_OPENGL_ERROR();
+}
 
 
 void myWidgetGL::mouseMoveEvent(QMouseEvent *event)
@@ -86,6 +94,13 @@ void myWidgetGL::mouseMoveEvent(QMouseEvent *event)
     if( !ctrl_pressed && shift_pressed && (event->buttons() & Qt::RightButton) )
         nav.go_forward(5.0f*dL*(y-nav.y_previous()));
 
+    // right button + ctrl controls the object picking translation
+    if (ctrl_pressed && !shift_pressed && (event->buttons() & Qt::RightButton)  )
+    {
+        float const dt = 1*dL;
+        scene_3d.pick_and_move(dt*(x-nav.x_previous()), dt*(y-nav.y_previous()));
+    }
+
 
     nav.x_previous()=x;
     nav.y_previous()=y;
@@ -94,6 +109,10 @@ void myWidgetGL::mouseMoveEvent(QMouseEvent *event)
 
 }
 
+void myWidgetGL::mouseReleaseEvent(QMouseEvent *)
+{
+    scene_3d.remove_picking_constraint();
+}
 
 void myWidgetGL::timerEvent(QTimerEvent *event)
 {
@@ -128,7 +147,7 @@ void myWidgetGL::initializeGL()
 
     //Activate depth buffer
     glEnable(GL_DEPTH_TEST); PRINT_OPENGL_ERROR();
-   // emit gl_loaded();
+//    emit gl_loaded();
 }
 
 GLuint myWidgetGL::load_texture_file(std::string const& filename)
@@ -202,13 +221,6 @@ void myWidgetGL::resizeGL(int const width,int const height)
     glViewport(0,0, width, height); PRINT_OPENGL_ERROR();
 }
 
-void myWidgetGL::mousePressEvent(QMouseEvent *event)
-{
-    nav.x_previous()=event->x();
-    nav.y_previous()=event->y();
-    picking(nav.x_previous(),nav.y_previous());
-    updateGL(); PRINT_OPENGL_ERROR();
-}
 
 
 
@@ -281,12 +293,7 @@ scene myWidgetGL::get_scene() const
 }
 
 
-void myWidgetGL::picking(float screenX, float screenY)//, cpe::PickingRay pickingRay)
+cpe::navigator_tool myWidgetGL::get_nav() const
 {
-    std::pair<cpe::vec3,cpe::vec3> picked = nav.ray_world_space_cam1(screenX,screenY);
-    std::cout << picked.first << std::endl;
-    std::cout << picked.second << std::endl;
-    //picked.first is center  in world space ( camera posision)
-    //picked.second is the ray pointed in world space
-    cpe::vec3 d = cpe::vec3(picked.second.x() - picked.first.x(),picked.second.y() - picked.first.y(), picked.second.z() - picked.first.z() );
+    return nav;
 }

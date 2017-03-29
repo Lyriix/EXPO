@@ -70,6 +70,7 @@ myWindow::myWindow(QWidget *parent)
         selectionModel = ui->treeView->selectionModel();
 
 
+
     }
     catch(cpe::exception_cpe const& e)
     {
@@ -83,7 +84,7 @@ myWindow::myWindow(QWidget *parent)
     connect(myModel, SIGNAL(editCompleted(const QString &)), this, SLOT(setWindowTitle(const QString &)));
    /* connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &))); */
-    connect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()), Qt::QueuedConnection);
+    connect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()));
 
 }
 
@@ -134,15 +135,7 @@ void myWindow::selectionChangedSlot(const QItemSelection &, const QItemSelection
 
 void myWindow::set_model_list()
 {
-    //std::cout << glWidget->get_scene().get_meshes_names()[0] << std::endl;
-    //myModel->rowCount();
-    //qDebug() << "AAA";
-    //usleep(1000000);
+//    myModel->rowCount(glWidget->get_scene().get_meshes().size());
     myModel->fill_objects_names(glWidget->get_scene().get_meshes_names());
     ui->tableView->setModel( myModel );
-    //glWidget->updateGL();
-    //qDebug() << "BBB";
-
-    //disconnect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()));
-
 }
