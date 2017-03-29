@@ -12,7 +12,7 @@
 #include "../../lib/materials/material_io.hpp"
 
 #include "../../lib/mesh/format/read_obj.hpp"
-#include "../../lib/intersection/PickingRay.hpp"
+
 #include <cmath>
 #include <string>
 #include <sstream>
@@ -25,9 +25,6 @@ using namespace cpe;
 
 void scene::load_scene()
 {
-
-
-
     //*****************************************//
     // Preload default structure               //
     //*****************************************//
@@ -47,7 +44,7 @@ void scene::load_scene()
     for(int i=0; i< mesh_eye.size(); i++)
     {
         mesh_eye.at(i).transform_apply_scale(0.2f);
-        //mesh_eye.at(i).fill_color(vec3(1.0f,1.0f,1.0f));
+        mesh_eye.at(i).add_object_index(i);
         mesh_eye_opengl.at(i).fill_vbo(mesh_eye.at(i));
     }
 
@@ -70,18 +67,59 @@ void scene::load_scene()
         std::map<std::string,int>::iterator it_map = map_material.find(mesh.get_material_name());
         if(it_map != map_material.end())
         {
-            int idx = it_map->second; //map_material.at(it_map);
+            int idx = it_map->second;
             mesh.add_material_index(idx);
         }
-
     }
+
+    init_physics();
+
     std::cout << "REPRINT OBJ INFO WITH MATERIAL INDEX LOADED THIS TIME" << std::endl;
     print_obj_info(mesh_eye);
+}
 
+void scene::init_physics()
+{
+    //build the broadphase
+    broadphase = new btDbvtBroadphase();
+    //Set up the collision configuration and dispatcher
+    collisionConfiguration = new btDefaultCollisionConfiguration();
+    dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    //The actual physics solver
+    solver = new btSequentialImpulseConstraintSolver;
+    //The world
+    world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    world->setGravity(btVector3(0.f,0.f,0.f));
 
-    //*****************************************//
-    // Generate user defined mesh              //
-    //*****************************************//
+    //Construction of the physic objects
+//    mStates.assign(mesh_eye.size(),);
+//    int i=0;
+    for(auto & me : mesh_eye)
+    {
+        // Bounding box
+        btConvexHullShape* shape = new btConvexHullShape();
+        // Adding vertex to the shape/BB
+        for( int i=0; i< me.size_vertex() ; i++)
+            shape->addPoint(btVector3(me.vertex(i).x(), me.vertex(i).y(), me.vertex(i).z()));
+        //property of the shape/bb (position, mass, inertia)
+        btTransform transform;
+        transform.setIdentity();
+        btVector3 localInertia(0,0,0);
+        btScalar mass = 0.0f;
+        if(mass)
+            shape->calculateLocalInertia(mass,localInertia);
+        //The motion state (for simulations and displacement)
+        btMotionState* motionState = new btDefaultMotionState(transform);
+        mStates.push_back(motionState); // Not even sure we need it finally
+        //The rigid body
+        btRigidBody::btRigidBodyConstructionInfo bodyConstructionInfo(mass, motionState, shape, localInertia);
+        btRigidBody* body = new btRigidBody(bodyConstructionInfo);
+        body->setUserIndex(me.get_object_index());
+        rigidBodies.push_back(body);
+        world->addRigidBody(body);
+    }
+    btDebugDrawer = new cpe::BulletDebugDrawer();
+    world->setDebugDrawer(btDebugDrawer);
 
 }
 
@@ -142,6 +180,16 @@ void scene::draw_scene()
         mesh_eye_opengl.at(i).draw();
         i++;
     }
+    world->stepSimulation(1.0f/pwidget->get_nav().fps() , 1);
+    glLineWidth(2.5);
+    glColor3f(1.0,0.0,0.0);
+    glBegin(GL_LINES);
+
+    glVertex3f(out_origin.x(),out_origin.y(), out_origin.z());
+    glVertex3f(out_direction.x(), out_direction.y(), out_direction.z());
+    glEnd();
+//    world->debugDrawWorld();
+
 }
 
 
@@ -164,11 +212,9 @@ void scene::set_widget(myWidgetGL* widget_param)
 std::vector<std::string> scene::get_meshes_names()
 {
     std::vector<std::string> names;
-    //std::cout << "@@@@@@@@@"<<std::endl;
     for(auto & mesh : mesh_eye)
     {
         names.push_back(mesh.get_material_name());
-        //std::cout <<"###"<< mesh.get_object_name() << std::endl;
 
     }
     return names;
@@ -179,4 +225,83 @@ std::vector<cpe::mesh>& scene::get_meshes()
     return mesh_eye;
 }
 
+
+
+void scene::picking(int x, int y)
+{
+    std::pair<vec3,vec3> out = pwidget->get_nav().ray_world_space_cam1(x,y);
+    out_origin = out.first;
+    out_direction = out.second*1000.0f;
+
+    btCollisionWorld::ClosestRayResultCallback RayCallBack(
+                btVector3(out_origin.x(),out_origin.y(), out_origin.z()),
+                btVector3(out_direction.x(), out_direction.y(), out_direction.z()));
+    world->rayTest(btVector3(out_origin.x(),out_origin.y(), out_origin.z()),
+                   btVector3(out_direction.x(), out_direction.y(), out_direction.z()),
+                   RayCallBack);
+
+    if(RayCallBack.hasHit())
+    {
+        btVector3 pickPos = RayCallBack.m_hitPointWorld;
+        btRigidBody* body_tmp = (btRigidBody*)btRigidBody::upcast(RayCallBack.m_collisionObject);
+        if(body_tmp)
+        {
+            m_pickedBody = body_tmp;
+            m_savedState = m_pickedBody->getActivationState();
+            m_pickedBody->setActivationState(DISABLE_DEACTIVATION);
+            btVector3 localPivot = body_tmp->getCenterOfMassTransform().inverse() * pickPos;
+            btPoint2PointConstraint* p2p = new btPoint2PointConstraint(*body_tmp, localPivot);
+            world->addConstraint(p2p); //,TRUE);
+            m_pickedConstraint = p2p;
+
+        }
+    }
+}
+
+void scene::pick_and_move(float tr_x, float tr_y)
+{
+    camera_matrices const& cam = pwidget->camera();
+
+    if(m_pickedBody && m_pickedConstraint)
+    {
+        btPoint2PointConstraint* pickCon = static_cast<btPoint2PointConstraint*>(m_pickedConstraint);
+        if(pickCon)
+        {
+            vec3 trans = vec3(tr_x, -tr_y, 0.f);
+            trans = cam.normal * trans;
+            trans.z() = - trans.z();
+            m_pickedBody->getWorldTransform().setOrigin(
+                        m_pickedBody->getWorldTransform().getOrigin()
+                        + btVector3( trans.x(), trans.y(), trans.z()));
+            int index = m_pickedBody->getUserIndex();
+            mesh_eye.at(index).transform_apply_translation(trans);
+            mesh_eye_opengl.at(index).fill_vbo(mesh_eye.at(index));
+        }
+    }
+}
+
+void scene::remove_picking_constraint()
+{
+    if(m_pickedConstraint != 0)
+    {
+        m_pickedBody->getMotionState();
+        m_pickedBody->forceActivationState(m_savedState);
+        //        m_pickedBody->forceActivationState(ACTIVE_TAG);
+        //        m_pickedBody->activate();
+        world->removeConstraint(m_pickedConstraint);
+        delete m_pickedConstraint;
+        m_pickedConstraint = 0;
+        m_pickedBody = 0;
+
+    }
+}
+
+void scene::dealloc()
+{
+    delete world;
+    delete solver;
+    delete dispatcher;
+    delete collisionConfiguration;
+    delete broadphase;
+}
 

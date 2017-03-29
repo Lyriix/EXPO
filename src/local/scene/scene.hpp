@@ -16,8 +16,10 @@
 #include "../../lib/interface/camera_matrices.hpp"
 
 #include "../../lib/materials/material.hpp"
-#include "../../lib/intersection/PickingRay.hpp"
 #include <vector>
+
+#include "../../lib/bullet/BulletDebugDrawer.hpp"
+#include <btBulletDynamicsCommon.h>
 
 
 class myWidgetGL;
@@ -28,8 +30,6 @@ class scene
 public:
 
     scene();
-
-
 
     /** \brief Method called only once at the beginning (load off files ...) */
     void load_scene();
@@ -44,7 +44,20 @@ public:
     std::vector<std::string> get_meshes_names();
     std::vector<cpe::mesh>& get_meshes();
 
+    /** \brief Method called only once to initialize the physic engine */
+    void init_physics();
 
+    /** \brief Method called on a pick_object event */
+    void picking(int x, int y);
+
+    /** \brief Method called on a pick_and_move_object event */
+    void pick_and_move(float tr_x, float tr_y);
+
+    /** \brief Method called to delete and initialize picking parameters */
+    void remove_picking_constraint();
+
+    /** delete all physic engines element */
+    void dealloc();
 
 private:
 
@@ -84,6 +97,29 @@ private:
     /** Variable for Dragon */
     float tps=0.0f;
     float op = 1.0f;
+
+
+    /** Bullet physic engine common element */
+    btBroadphaseInterface* broadphase;
+    btDefaultCollisionConfiguration* collisionConfiguration;
+    btCollisionDispatcher* dispatcher;
+    btSequentialImpulseConstraintSolver* solver;
+    btDiscreteDynamicsWorld* world;
+
+    /** Bullet physic engine element relative to the picking process */
+    btRigidBody* m_pickedBody = NULL;
+    btPoint2PointConstraint* m_pickedConstraint = NULL;
+    int m_savedState;
+    cpe::vec3 out_origin, out_direction;
+
+    /** Bullet physic engine debug drawer */
+    cpe::BulletDebugDrawer* btDebugDrawer;
+
+    /** Bullet physic engine element relatives to objects */
+    std::vector<btMotionState*> mStates;
+    std::vector<btRigidBody*> rigidBodies;
+
+
 
 };
 
