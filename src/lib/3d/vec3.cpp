@@ -182,7 +182,15 @@ vec3 operator-(vec3 const& v)
     return vec3(-v.x(),-v.y(),-v.z());
 }
 
+bool operator<(vec3 const& v1, vec3 const& v2)
+{
+    if(v1.x() < v2.x()
+            && v1.y() < v2.y()
+            && v1.z() < v2.z())
+        return true;
 
+    return false;
+}
 
 
 float dot(vec3 const& lhs,vec3 const& rhs)

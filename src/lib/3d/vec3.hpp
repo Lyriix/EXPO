@@ -137,7 +137,8 @@ vec3 operator/(vec3 const& v,float s);
 /** \brief unary negation */
 vec3 operator-(vec3 const& v);
 
-
+/** \brief inequality tem for term */
+bool operator<(vec3 const& v1, vec3 const& v2);
 // ********************************************* //
 //  Math operation
 // ********************************************* //
