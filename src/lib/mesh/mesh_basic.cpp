@@ -139,6 +139,15 @@ std::string& mesh_basic::get_object_name()
     return object_name;
 }
 
+int mesh_basic::get_object_index() const
+{
+    return object_index;
+}
+
+int& mesh_basic::get_object_index()
+{
+    return object_index;
+}
 
 void mesh_basic::add_vertex(vec3 const& v)
 {
@@ -175,9 +184,14 @@ void mesh_basic::add_material_index(int const& m_index)
     material_index = m_index;
 }
 
-void mesh_basic::add_object_name(std::string name)
+void mesh_basic::add_object_name(const std::__cxx11::string &name)
 {
     object_name = name;
+}
+
+void mesh_basic::add_object_index(const int &index)
+{
+    object_index = index;
 }
 
 void mesh_basic::fill_color(vec3 const& c)

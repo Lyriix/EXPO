@@ -43,6 +43,8 @@ int mesh::get_material_index() const                     {return mesh_basic::get
 int& mesh::get_material_index()                          {return mesh_basic::get_material_index();}
 std::string mesh::get_object_name() const                {return mesh_basic::get_object_name();}
 std::string& mesh::get_object_name()                     {return mesh_basic::get_object_name();}
+int mesh::get_object_index() const                       {return mesh_basic::get_object_index();}
+int& mesh::get_object_index()                            {return mesh_basic::get_object_index();}
 
 void mesh::add_vertex(vec3 const& v)                     {mesh_basic::add_vertex(v);}
 void mesh::add_normal(vec3 const& n)                     {mesh_basic::add_normal(n);}
@@ -52,4 +54,5 @@ void mesh::add_triangle_index(triangle_index const& idx) {mesh_basic::add_triang
 void mesh::add_material_name(const std::string &name)    {mesh_basic::add_material_name(name);}
 void mesh::add_material_index(const int &material_index) {mesh_basic::add_material_index(material_index);}
 void mesh::add_object_name(const std::string &name)      {mesh_basic::add_object_name(name);}
+void mesh::add_object_index(int const& index)            {mesh_basic::add_object_index(index);}
 }
