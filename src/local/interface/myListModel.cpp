@@ -25,6 +25,24 @@ int myListModel::columnCount(const QModelIndex & /*parent*/) const
     return COLS;
 }
 
+QVariant myListModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(role == Qt::DisplayRole)
+    {
+        if( orientation == Qt::Horizontal)
+        {
+            switch (section)
+            {
+            case 0:
+                return QString("Object");
+            case 1:
+                return QString("Hide");
+            }
+        }
+    }
+    return QVariant();
+}
+
 QVariant myListModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
@@ -38,6 +56,13 @@ QVariant myListModel::data(const QModelIndex &index, int role) const
             return objects_name.at(row);
         }
     }
+    if(role == Qt::CheckStateRole )
+    {
+        if (col == 1 )
+        {
+                return hide_button.at(row);
+        }
+    }
 
     return QVariant();
 }
@@ -45,7 +70,7 @@ QVariant myListModel::data(const QModelIndex &index, int role) const
 
 bool myListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole)
+   /* if (role == Qt::EditRole)
     {
         //save value from editor to member m_gridData
         m_gridData[index.row()][index.column()] = value.toString();
@@ -59,13 +84,25 @@ bool myListModel::setData(const QModelIndex &index, const QVariant &value, int r
             }
         }
         emit editCompleted(result);
+    }*/
+
+    if( role == Qt::CheckStateRole)
+    {
+            std::cout << index.row() << std::endl;
+            hide_button.at(index.row()) = value;
     }
+
+    emit dataChanged(index,index);
     return true;
 }
 
 Qt::ItemFlags myListModel::flags(const QModelIndex &index) const
 {
-    return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
+
+    if(index.isValid() && index.column() == 1 )
+        return QAbstractTableModel::flags(index) | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled;
+
 }
 
 void myListModel::fill_objects_names(std::vector<std::string> const& names)
@@ -74,5 +111,6 @@ void myListModel::fill_objects_names(std::vector<std::string> const& names)
     {
         QString qstr = QString::fromStdString(obj_name);
         objects_name.push_back(qstr);
+        hide_button.push_back(0);
     }
 }
