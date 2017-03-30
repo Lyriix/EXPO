@@ -125,6 +125,7 @@ void scene::init_physics()
 
 void scene::draw_scene()
 {
+    glFlush();
     //Setup uniform parameters
     glUseProgram(shader_program_id);                                                                           PRINT_OPENGL_ERROR();
 
@@ -176,10 +177,16 @@ void scene::draw_scene()
 
         vec3 light(0.5,0.5,0.5);
         glUniform3fv(get_uni_loc(shader_program_id, "light"),1,light.pointer()); PRINT_OPENGL_ERROR();
+        //Hack for display all the meshes after initialization of the list
+        if(firstTranslation)
+        {
+            mes.transform_apply_translation(vec3(0.0001f,0.0001f,0.0001f));
+            mesh_eye_opengl.at(i).fill_vbo(mes);
 
+        }
         mesh_eye_opengl.at(i).draw();
         i++;
-    }
+    }firstTranslation = false;
     world->stepSimulation(1.0f/pwidget->get_nav().fps() , 1);
     glLineWidth(2.5);
     glColor3f(1.0,0.0,0.0);
@@ -254,6 +261,8 @@ void scene::picking(int x, int y)
             world->addConstraint(p2p); //,TRUE);
             m_pickedConstraint = p2p;
 
+            std::cout << mesh_eye.at(m_pickedBody->getUserIndex()).get_material_name() << std::endl;
+
         }
     }
 }
@@ -269,6 +278,7 @@ void scene::pick_and_move(float tr_x, float tr_y)
         {
             vec3 trans = vec3(tr_x, -tr_y, 0.f);
             trans = cam.normal * trans;
+            std::cout << trans << std::endl;
             trans.z() = - trans.z();
             m_pickedBody->getWorldTransform().setOrigin(
                         m_pickedBody->getWorldTransform().getOrigin()
