@@ -110,7 +110,7 @@ void myWindow::action_wireframe()
 
 void myWindow::showWindowTitle(const QString & title)
 {
-    setWindowTitle(title);
+    setWindowTitle("titl");
 }
 
 
@@ -138,4 +138,5 @@ void myWindow::set_model_list()
 //    myModel->rowCount(glWidget->get_scene().get_meshes().size());
     myModel->fill_objects_names(glWidget->get_scene().get_meshes_names());
     ui->tableView->setModel( myModel );
+
 }
