@@ -59,6 +59,7 @@ public:
     /** delete all physic engines element */
     void dealloc();
 
+
 private:
 
     /** Load a texture from a given file and returns its id */
@@ -120,6 +121,8 @@ private:
     std::vector<btRigidBody*> rigidBodies;
 
 
+    /** just a hack to display it in the first place */
+    bool firstTranslation = true;
 
 };
 
