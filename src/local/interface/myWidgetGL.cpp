@@ -32,7 +32,8 @@ void myWidgetGL::paintGL()
 
     //draw indicating axes
     draw_axes();
-    swapBuffers();
+
+//    swapBuffers();
 }
 
 
@@ -117,7 +118,8 @@ void myWidgetGL::mouseReleaseEvent(QMouseEvent *)
 void myWidgetGL::timerEvent(QTimerEvent *event)
 {
     event->accept();
-    updateGL(); PRINT_OPENGL_ERROR();
+//    updateGL(); PRINT_OPENGL_ERROR();
+    update(); PRINT_OPENGL_ERROR();
 }
 
 
@@ -147,7 +149,10 @@ void myWidgetGL::initializeGL()
 
     //Activate depth buffer
     glEnable(GL_DEPTH_TEST); PRINT_OPENGL_ERROR();
-//    emit gl_loaded();
+    emit gl_loaded();
+//    glFlush();
+
+
 }
 
 GLuint myWidgetGL::load_texture_file(std::string const& filename)
