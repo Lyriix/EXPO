@@ -52,8 +52,10 @@ void main (void)
 
 
    vec3 rgb = min(material[index_mat].emission + color.rgb *scatteredLight + reflectedLight, vec3(1.0f,1.0f,1.0f));
-
-    gl_FragColor = vec4(rgb, material[index_mat].transparency);
+   vec2 tex_coord=gl_TexCoord[0].xy;
+   vec4 color_texture = texture2D(texture,tex_coord);
+   vec4 color = vec4(rgb, material[index_mat].transparency) * color_texture;
+    gl_FragColor = color;
 }
 
 
