@@ -58,6 +58,11 @@ public:
 
     /** delete all physic engines element */
     void dealloc();
+    /** Method called to set the draw_status of a mesh : to draw it or not */
+    void change_draw_state_mesh_index(int index, bool state);
+
+    /** set debugDrawBullet */
+    void set_debug_draw_bullet(bool is_on);
 
 
 private:
@@ -71,6 +76,9 @@ private:
     /** Default id for the texture (white texture) */
     GLuint texture_default;
 
+    GLuint texture_cornea;
+    GLuint texture_esclerot;
+    GLuint texture_skin;
     /** The id of the shader do draw meshes */
     GLuint shader_program_id;
 
@@ -123,6 +131,9 @@ private:
 
     /** just a hack to display it in the first place */
     bool firstTranslation = true;
+
+    /** Draw the debug utility for bullet or not */
+    bool drawDebugbullet = false;
 
 };
 

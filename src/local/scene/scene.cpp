@@ -30,6 +30,9 @@ void scene::load_scene()
     //*****************************************//
     texture_default = load_texture_file("data/white.jpg");
 
+    texture_cornea = load_texture_file("data/Blender/eye3d/textures/SighIriT.JPG");
+    texture_esclerot = load_texture_file("data/Blender/eye3d/textures/SighSecT.png");
+    texture_skin = load_texture_file("data/Blender/eye3d/textures/SighSkiT.png");
     shader_program_id = read_shader("shaders/shader_material.vert",
                                     "shaders/shader_material.frag"); PRINT_OPENGL_ERROR();
 
@@ -92,8 +95,8 @@ void scene::init_physics()
     world->setGravity(btVector3(0.f,0.f,0.f));
 
     //Construction of the physic objects
-//    mStates.assign(mesh_eye.size(),);
-//    int i=0;
+    //    mStates.assign(mesh_eye.size(),);
+    //    int i=0;
     for(auto & me : mesh_eye)
     {
         // Bounding box
@@ -183,10 +186,22 @@ void scene::draw_scene()
             mes.transform_apply_translation(vec3(0.0001f,0.0001f,0.0001f));
             mesh_eye_opengl.at(i).fill_vbo(mes);
 
+
         }
-        mesh_eye_opengl.at(i).draw();
+
+        if( (mes.get_object_name() == "Cornea"))        {           glBindTexture(GL_TEXTURE_2D,texture_cornea);  PRINT_OPENGL_ERROR();        }
+        else if( (mes.get_object_name() == "Esclerot1" ))        {           glBindTexture(GL_TEXTURE_2D,texture_default);  PRINT_OPENGL_ERROR();        }
+        else if( mes.get_object_name() == "Skin") { glBindTexture(GL_TEXTURE_2D,texture_skin); PRINT_OPENGL_ERROR(); }
+        else {  glBindTexture(GL_TEXTURE_2D,texture_default);  PRINT_OPENGL_ERROR(); }
+
+
+        if(!mes.get_hide_status())
+            mesh_eye_opengl.at(i).draw();
         i++;
-    }firstTranslation = false;
+
+    }
+
+    firstTranslation = false;
     world->stepSimulation(1.0f/pwidget->get_nav().fps() , 1);
     glLineWidth(2.5);
     glColor3f(1.0,0.0,0.0);
@@ -195,7 +210,8 @@ void scene::draw_scene()
     glVertex3f(out_origin.x(),out_origin.y(), out_origin.z());
     glVertex3f(out_direction.x(), out_direction.y(), out_direction.z());
     glEnd();
-//    world->debugDrawWorld();
+    if(drawDebugbullet)
+        world->debugDrawWorld();
 
 }
 
@@ -221,7 +237,7 @@ std::vector<std::string> scene::get_meshes_names()
     std::vector<std::string> names;
     for(auto & mesh : mesh_eye)
     {
-        names.push_back(mesh.get_material_name());
+        names.push_back(mesh.get_object_name());
 
     }
     return names;
@@ -278,7 +294,7 @@ void scene::pick_and_move(float tr_x, float tr_y)
         {
             vec3 trans = vec3(tr_x, -tr_y, 0.f);
             trans = cam.normal * trans;
-            std::cout << trans << std::endl;
+            //            std::cout << trans << std::endl;
             trans.z() = - trans.z();
             m_pickedBody->getWorldTransform().setOrigin(
                         m_pickedBody->getWorldTransform().getOrigin()
@@ -315,3 +331,13 @@ void scene::dealloc()
     delete broadphase;
 }
 
+void scene::change_draw_state_mesh_index(int index, bool state)
+{
+    mesh_eye.at(index).set_hide_status(state);
+
+}
+
+void scene::set_debug_draw_bullet(bool is_on)
+{
+    drawDebugbullet = is_on;
+}
