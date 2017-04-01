@@ -45,6 +45,8 @@ std::string mesh::get_object_name() const                {return mesh_basic::get
 std::string& mesh::get_object_name()                     {return mesh_basic::get_object_name();}
 int mesh::get_object_index() const                       {return mesh_basic::get_object_index();}
 int& mesh::get_object_index()                            {return mesh_basic::get_object_index();}
+bool mesh::get_hide_status() const                       {return mesh_basic::get_hide_status();}
+bool& mesh::get_hide_status()                            {return mesh_basic::get_hide_status();}
 
 void mesh::add_vertex(vec3 const& v)                     {mesh_basic::add_vertex(v);}
 void mesh::add_normal(vec3 const& n)                     {mesh_basic::add_normal(n);}
@@ -55,4 +57,5 @@ void mesh::add_material_name(const std::string &name)    {mesh_basic::add_materi
 void mesh::add_material_index(const int &material_index) {mesh_basic::add_material_index(material_index);}
 void mesh::add_object_name(const std::string &name)      {mesh_basic::add_object_name(name);}
 void mesh::add_object_index(int const& index)            {mesh_basic::add_object_index(index);}
+void mesh::set_hide_status(const bool &status)           {mesh_basic::set_hide_status(status);}
 }

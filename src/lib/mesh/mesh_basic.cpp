@@ -149,6 +149,10 @@ int& mesh_basic::get_object_index()
     return object_index;
 }
 
+bool mesh_basic::get_hide_status() const { return hide_status; }
+bool& mesh_basic::get_hide_status()      {return hide_status; }
+
+
 void mesh_basic::add_vertex(vec3 const& v)
 {
     vertex_data.push_back(v);
@@ -193,6 +197,9 @@ void mesh_basic::add_object_index(const int &index)
 {
     object_index = index;
 }
+
+void mesh_basic::set_hide_status(const bool &status) { hide_status = status; }
+
 
 void mesh_basic::fill_color(vec3 const& c)
 {

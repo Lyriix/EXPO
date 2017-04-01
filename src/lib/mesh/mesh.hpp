@@ -56,6 +56,8 @@ public:
     std::string& get_material_name();
     int get_material_index() const;
     int &get_material_index();
+    bool get_hide_status() const;
+    bool& get_hide_status();
 
     void add_vertex(vec3 const& v);
     void add_normal(vec3 const& n);
@@ -66,6 +68,7 @@ public:
     void add_object_index(int const& index);
     void add_material_name(std::string const& name);
     void add_material_index(const int &material_index);
+    void set_hide_status(const bool &status);
 
 };
 
