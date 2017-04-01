@@ -27,10 +27,16 @@ public:
     myWidgetGL(const QGLFormat& format,QGLWidget *parent = 0);
     ~myWidgetGL();
 
-    /** Set the drawing on/off */
+    /** Set the drawing on/off for the global scene*/
     void change_draw_state();
+    /** Set the drawing on/off for particular objects */
+    void change_draw_state_object(int index, bool state);
     /** Set the wireframe on/off */
     void wireframe(bool est_actif);
+    /** reset the widget */
+    void reset();
+    /** set the drawing on / off of the debug bullet drawer */
+    void set_bullet_debug(bool is_on);
 
     /** Get the current cameras values */
     cpe::camera_matrices const& camera() const;

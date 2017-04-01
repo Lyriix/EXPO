@@ -139,6 +139,7 @@ myWidgetGL::~myWidgetGL()
 
 void myWidgetGL::initializeGL()
 {
+//    makeCurrent();
     //Init OpenGL
     setup_opengl();
 
@@ -149,6 +150,9 @@ void myWidgetGL::initializeGL()
 
     //Activate depth buffer
     glEnable(GL_DEPTH_TEST); PRINT_OPENGL_ERROR();
+    //Activate transparency // Enable Blending
+    glEnable(GL_BLEND); PRINT_OPENGL_ERROR();
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     emit gl_loaded();
 //    glFlush();
 
@@ -207,6 +211,12 @@ void myWidgetGL::change_draw_state()
     updateGL();
 }
 
+void myWidgetGL::change_draw_state_object(int index, bool state)
+{
+    scene_3d.change_draw_state_mesh_index(index, state);
+}
+
+
 void myWidgetGL::wireframe(bool const is_wireframe)
 {
     if(is_wireframe==true)
@@ -219,6 +229,7 @@ void myWidgetGL::wireframe(bool const is_wireframe)
 
 
 
+
 void myWidgetGL::resizeGL(int const width,int const height)
 {
     nav.screen_size_x()=width;
@@ -226,7 +237,12 @@ void myWidgetGL::resizeGL(int const width,int const height)
     glViewport(0,0, width, height); PRINT_OPENGL_ERROR();
 }
 
+void myWidgetGL::reset()
+{
 
+    scene_3d.load_scene();
+    updateGL();
+}
 
 
 
@@ -301,4 +317,12 @@ scene myWidgetGL::get_scene() const
 cpe::navigator_tool myWidgetGL::get_nav() const
 {
     return nav;
+}
+
+void myWidgetGL::set_bullet_debug(bool is_on)
+{
+    if(is_on == true)
+        scene_3d.set_debug_draw_bullet(true);
+    else
+        scene_3d.set_debug_draw_bullet(false);
 }

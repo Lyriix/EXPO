@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <QLabel>
+
 myWindow::myWindow(QWidget *parent)
     :QMainWindow(parent),ui(new Ui::MainWindow)
 {
@@ -40,34 +42,13 @@ myWindow::myWindow(QWidget *parent)
         myModel = new myListModel();
 
 
+        QPixmap image("data/eye_anatomy.jpg");
 
-        /** Tree Widget */
-        standardModel = new QStandardItemModel ;
-        QStandardItem *rootNode = standardModel->invisibleRootItem();
-        //defining a couple of items
-        QStandardItem *americaItem = new QStandardItem("America");
-        QStandardItem *mexicoItem =  new QStandardItem("Canada");
-        QStandardItem *usaItem =     new QStandardItem("USA");
-        QStandardItem *bostonItem =  new QStandardItem("Boston");
-        QStandardItem *europeItem =  new QStandardItem("Europe");
-        QStandardItem *italyItem =   new QStandardItem("Italy");
-        QStandardItem *romeItem =    new QStandardItem("Rome");
-        QStandardItem *veronaItem =  new QStandardItem("Verona");
+        ui->imageView->setPixmap(image);
+//ui->imageView->set
 
-        //building up the hierarchy
-        rootNode->    appendRow(americaItem);
-        rootNode->    appendRow(europeItem);
-        americaItem-> appendRow(mexicoItem);
-        americaItem-> appendRow(usaItem);
-        usaItem->     appendRow(bostonItem);
-        europeItem->  appendRow(italyItem);
-        italyItem->   appendRow(romeItem);
-        italyItem->   appendRow(veronaItem);
 
-        //register the model
-        ui->treeView->setModel(standardModel);
-        ui->treeView->expandAll();
-        selectionModel = ui->treeView->selectionModel();
+
 
 
 
@@ -85,11 +66,18 @@ myWindow::myWindow(QWidget *parent)
    /* connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &))); */
     connect(glWidget, SIGNAL(gl_loaded()), this, SLOT(set_model_list()));
+    connect(myModel, SIGNAL(hide_button_pressed(const int &, const bool & )), this, SLOT(action_hide_button_pressed(const int , const bool & )));
+    connect(ui->ResetButton,SIGNAL(clicked()),this,SLOT(action_reset()));
+//    connect(myModel, SIGNAL(myListModel::hide_button_pressed(const int &, const bool &)), this, SLOT(aboutQt(const int &, const bool &)));
+    connect(ui->debugBullet,SIGNAL(clicked()), this, SLOT(action_debug_bullet()));
+
 
 }
 
 myWindow::~myWindow()
 {}
+
+
 
 void myWindow::action_quit()
 {
@@ -113,25 +101,28 @@ void myWindow::showWindowTitle(const QString & title)
     setWindowTitle("titl");
 }
 
-
-
-void myWindow::selectionChangedSlot(const QItemSelection &, const QItemSelection &)
+void myWindow::action_reset()
 {
-    //get the text of the selected item
-    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
-    QString selectedText = index.data(Qt::DisplayRole).toString();
-    //find out the hierarchy level of the selected item
-    int hierarchyLevel=1;
-    QModelIndex seekRoot = index;
-    while(seekRoot.parent() != QModelIndex())
-    {
-        seekRoot = seekRoot.parent();
-        hierarchyLevel++;
-    }
-    QString showString = QString("%1, Level %2").arg(selectedText)
-                         .arg(hierarchyLevel);
-    setWindowTitle(showString);
+    glWidget->reset();
 }
+
+//void myWindow::selectionChangedSlot(const QItemSelection &, const QItemSelection &)
+//{
+//    //get the text of the selected item
+//    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+//    QString selectedText = index.data(Qt::DisplayRole).toString();
+//    //find out the hierarchy level of the selected item
+//    int hierarchyLevel=1;
+//    QModelIndex seekRoot = index;
+//    while(seekRoot.parent() != QModelIndex())
+//    {
+//        seekRoot = seekRoot.parent();
+//        hierarchyLevel++;
+//    }
+//    QString showString = QString("%1, Level %2").arg(selectedText)
+//                         .arg(hierarchyLevel);
+//    setWindowTitle(showString);
+//}
 
 void myWindow::set_model_list()
 {
@@ -139,4 +130,18 @@ void myWindow::set_model_list()
     myModel->fill_objects_names(glWidget->get_scene().get_meshes_names());
     ui->tableView->setModel( myModel );
 
+}
+
+void myWindow::action_hide_button_pressed(const int & index, const bool &state )
+{
+    qDebug() << index  ;
+    qDebug() << state  ;
+//    const QModelIndex index = myModel->hide_button.
+    glWidget->change_draw_state_object(index,state);
+}
+
+void myWindow::action_debug_bullet()
+{
+    bool const state_debug_bullet = ui->debugBullet->isChecked();
+    glWidget->set_bullet_debug(state_debug_bullet);
 }

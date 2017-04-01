@@ -43,7 +43,12 @@ private:
     std::vector<QVariant> hide_button;
 
 signals:
-    void editCompleted(const QString &); //transfer the modified text to the window title
+    /** Transfer modified text to the window title */
+    void editCompleted(const QString &);
+
+    /** Hide / un-Hide objects signals to interact with glWidget */
+    void hide_button_pressed(const int &index, const bool &state);
+
 };
 
 

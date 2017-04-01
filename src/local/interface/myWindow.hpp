@@ -33,6 +33,7 @@ public:
 
     //std::vector<std::string> get_object_names();
 
+
 private slots:
 
     /** Quit the application */
@@ -41,8 +42,14 @@ private slots:
     void action_draw();
     /** Set the Wireframe mode for the meshes */
     void action_wireframe();
-
+    /** Fill the list model with object names */
     void set_model_list();
+    /** hide or not some objects of the gl view */
+    void action_hide_button_pressed(const int &index, const bool &state);
+    /** Action reset the drawing to its original drawn position/orientation */
+    void action_reset();
+    /** Enable/Disbale debug bullet drawing */
+    void action_debug_bullet();
 
 
 private:
@@ -59,8 +66,8 @@ private:
     QStandardItemModel *standardModel;
     QItemSelectionModel *selectionModel;
 
-private slots:
-    void selectionChangedSlot(const QItemSelection & newSelection, const QItemSelection & oldSelection);
+//private slots:
+//    void selectionChangedSlot(const QItemSelection & newSelection, const QItemSelection & oldSelection);
 
 public slots :
     void showWindowTitle(const QString& title);

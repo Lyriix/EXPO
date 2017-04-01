@@ -88,11 +88,13 @@ bool myListModel::setData(const QModelIndex &index, const QVariant &value, int r
 
     if( role == Qt::CheckStateRole)
     {
-            std::cout << index.row() << std::endl;
+//            std::cout << index.row() << std::endl;
             hide_button.at(index.row()) = value;
+            emit hide_button_pressed(index.row(), value.toBool());
+
     }
 
-    emit dataChanged(index,index);
+//    emit dataChanged(index,index);
     return true;
 }
 

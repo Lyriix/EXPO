@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     //The main window
     myWindow win;
     win.show();
-
+    //myPopUpWindow popWin;
 
     //Start Qt Application
     return app.exec();
